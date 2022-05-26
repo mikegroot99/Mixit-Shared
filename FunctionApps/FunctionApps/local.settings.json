@@ -2,6 +2,8 @@
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "",
-    "FUNCTIONS_WORKER_RUNTIME": "python"
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobs.ServiceBusQueueTrigger2.Disabled": "true",
+    "AzureWebJobs.ServiceBusQueueTrigger3.Disabled": "true"
   }
 }
