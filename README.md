@@ -1,1 +1,1 @@
-# Mixit-Shared
+# A sample python web app to use in deployment

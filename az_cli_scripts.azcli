@@ -1,0 +1,17 @@
+az login
+
+
+# az appservice plan create \
+#   --name wessel-web-app \
+#   --resource-group  Mixit2-rg \
+#   --sku B1 \
+#   --is-linux
+
+# az webapp create \
+#   --name wessel-azcli-test\
+#   --plan wessel-web-app \
+#   --resource-group Mixit2-rg \
+#   --runtime "Python|3.7" \
+#   --deployment-local-git
+
+az webapp deployment list-publishing-profiles --xml --resource-group Mixit2-rg --name wessel-simple-flask-app
