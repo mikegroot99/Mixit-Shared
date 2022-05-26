@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <title>MixixWebApp</title>
+</head>
+
+  <form action="{{ url_for('UserInputDataField') }}" method="post">
+    <input type="text" name="UserInputDataFromField" placeholder="Vul iets in hier">
+    <button type="submit">Verzenden</button>
+  </form>
+  <h3>Response:</h3>
+  <p>{{UserInputData}}</p>
+  <p>{{weerAppReturnData}}</p>
+  
+  
+</body>
+
+</html>
