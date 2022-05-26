@@ -1,0 +1,19 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "inputRequest",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "fromwebappwheatherdata",
+      "connection": "MixitAppServiceBus_SERVICEBUS"
+    },
+    {
+      "name": "outputWeatherAPI",
+      "direction": "out",
+      "type": "serviceBus",
+      "queueName": "fromweerapptowebapp",
+      "connection": "MixitAppServiceBus_SERVICEBUS"
+    }
+  ]
+}
