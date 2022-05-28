@@ -17,13 +17,20 @@ Session(app)
 
 
 # serviceque connection strings
-
+# function app (brian) azure location
 sendque = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=conncetionRequestQueue;SharedAccessKey=73BwiAWHM7diJ/kRmw2RUGiGL0zkAlBSnjndTWwB3gY=;EntityPath=outlookrequestqueue"
 sendquename = "outlookrequestqueue"
 
 requestque =  "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=conncetionOutputQueue;SharedAccessKey=ozFfiZwPe84DJt3v7T2u/sUM2egubyolpV2eTxr6zWM=;EntityPath=outlookoutputqueue"
 requestquename = "outlookoutputqueue"
 
+# function app (wessel) local pc locations
+
+sendqueWessel= "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=input-connection-string;SharedAccessKey=SYSco7xYz+hmt7AF7qZx6dm8ZybeZPOZ7LAHmohUnl8=;EntityPath=input-queque-2"
+sendquenameWessel= "input-queque-2"
+
+requestqueWessel = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=output-queue-2;SharedAccessKey=t5xF10WVDwWzBBZpgXtYpKyhpz4hUeSbnbZ9k/+yVfU=;EntityPath=output-queue-2"
+requestquenameWessel = "output-queue-2"
 # Old keyvault code.
 
 # Azure KeyVault name + URL
@@ -94,13 +101,14 @@ def graphcall():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    print(token)
+    #print(token)
 
     # Acces token
     accestoken = token['access_token']
     # send token + app_config.Cendpoint to servicebus que
     send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
-
+    #send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
+    retrievedDataFromRequestquee = received_single_message_from_requestque()
 
 
     #old
@@ -109,8 +117,13 @@ def graphcall():
         app_config.CENDPOINT,
         headers={'Authorization': 'Bearer ' + token['access_token']},
         ).json()['value']
-    print(graph_data)
-    return render_template('schedule.html', data=graph_data)
+    print("tis is data from code")    
+    #print(graph_data)
+    print("tis is data from servicebus")
+    #print(retrievedDataFromRequestquee)
+    jsonRetrievedDataFromRequestquee = json.loads(retrievedDataFromRequestquee)
+    print(jsonRetrievedDataFromRequestquee["address"])
+    return render_template('schedule.html', data=retrievedDataFromRequestquee)
 
 @app.route("/logout")
 def logout():
@@ -133,9 +146,9 @@ def authorized():
         pass
     return redirect(url_for("index"))
 
-# Send data to servicebus (nieuw)
+# Send and retrieve data to servicebus (nieuw)
 
-# Code for send a single message to outlookoutputqueue for getting agenda
+# Code for send a single message to outlookoutputqueue (brian) for getting agenda
 def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
     # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
     with ServiceBusClient.from_connection_string(sendque) as client:
@@ -143,8 +156,33 @@ def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
             #tokenstring = json.dumps(accestoken)
             tokenAndCendpoint = accestoken +";"+ CENDPOINT
             single_message = ServiceBusMessage(tokenAndCendpoint)
-            print("This is the singel message")
-            print(single_message)
+            #print("This is the singel message")
+            #print(single_message)
+            sender.send_messages(single_message)
+
+
+# Code for retrieve a single message to outlookoutputqueue (brian) for getting agenda
+def received_single_message_from_requestque():
+    with ServiceBusClient.from_connection_string(requestque) as client:
+        with client.get_queue_receiver(requestquename) as receiver:
+            received_message = receiver.receive_messages(max_wait_time=1)
+            for message in received_message:
+                bodyMessage = "Receiving: {}".format(message)
+                receiver.complete_message(message)
+                return(bodyMessage)
+
+
+
+# Code for send a single message to outlookoutputqueue (Wessel) for getting agenda
+def send_single_message_to_outlookoutputqueueeWessel(accestoken, CENDPOINT):
+    # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
+    with ServiceBusClient.from_connection_string(sendqueWessel) as client:
+        with client.get_queue_sender(sendquenameWessel) as sender:
+            #tokenstring = json.dumps(accestoken)
+            tokenAndCendpoint = accestoken +";"+ CENDPOINT
+            single_message = ServiceBusMessage(tokenAndCendpoint)
+            #print("This is the singel message")
+            #print(single_message)
             sender.send_messages(single_message)
 
 
