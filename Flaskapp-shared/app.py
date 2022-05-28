@@ -1,6 +1,7 @@
 import csv
 import os
 import requests
+import json
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_session import Session 
 from azure.servicebus import ServiceBusClient, ServiceBusMessage
@@ -15,11 +16,19 @@ app.config.from_object(app_config)
 Session(app)
 
 
+# serviceque connection strings
+
+sendque = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=conncetionRequestQueue;SharedAccessKey=73BwiAWHM7diJ/kRmw2RUGiGL0zkAlBSnjndTWwB3gY=;EntityPath=outlookrequestqueue"
+sendquename = "outlookrequestqueue"
+
+requestque =  "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=conncetionOutputQueue;SharedAccessKey=ozFfiZwPe84DJt3v7T2u/sUM2egubyolpV2eTxr6zWM=;EntityPath=outlookoutputqueue"
+requestquename = "outlookoutputqueue"
+
 # Old keyvault code.
 
 # Azure KeyVault name + URL
-keyVaultName = "KeyVaultMixit"
-KVUri = f"https://{keyVaultName}.vault.azure.net"
+#keyVaultName = "KeyVaultMixit"
+#KVUri = f"https://{keyVaultName}.vault.azure.net"
 
 #credential = DefaultAzureCredential()
 #client = SecretClient(vault_url=KVUri, credential=credential)
@@ -86,6 +95,15 @@ def graphcall():
     if not token:
         return redirect(url_for("login"))
     print(token)
+
+    # Acces token
+    accestoken = token['access_token']
+    # send token + app_config.Cendpoint to servicebus que
+    send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
+
+
+
+    #old
     #Ophalen data met graph API
     graph_data = requests.get(
         app_config.CENDPOINT,
@@ -115,37 +133,28 @@ def authorized():
         pass
     return redirect(url_for("index"))
 
-# Send data to servicebus bellow
+# Send data to servicebus (nieuw)
 
-# Code for send a single message for the fromweerapptowebapp.
-def send_single_message_to_weatherfunction_que(UserText):
+# Code for send a single message to outlookoutputqueue for getting agenda
+def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
     # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
-    with ServiceBusClient.from_connection_string(retrieved_secret_fromwebappwheatherdata.value) as client:
-        with client.get_queue_sender(QUEUE_NAME_WeatherAPISendQue) as sender:
-            single_message = ServiceBusMessage(UserText)
+    with ServiceBusClient.from_connection_string(sendque) as client:
+        with client.get_queue_sender(sendquename) as sender:
+            #tokenstring = json.dumps(accestoken)
+            tokenAndCendpoint = accestoken +";"+ CENDPOINT
+            single_message = ServiceBusMessage(tokenAndCendpoint)
+            print("This is the singel message")
+            print(single_message)
             sender.send_messages(single_message)
+
+
+
+# Send data to servicebus bellow old
 
 # Code for receiving a single message for the fromweerapptowebapp.
 def received_single_message_from_WeerApp():
     with ServiceBusClient.from_connection_string(retrieved_secret_fromweerapptowebapp.value) as client:
         with client.get_queue_receiver(QUEUE_NAME_WeatherAPIReceiveQue) as receiver:
-            received_message = receiver.receive_messages(max_wait_time=1)
-            for message in received_message:
-                bodyMessage = "Receiving: {}".format(message)
-                receiver.complete_message(message)
-                return(bodyMessage)
-
-# Code for send a single message for the from other function (Brian).
-def send_single_message(UserText):
-    with ServiceBusClient.from_connection_string(retrieved_secret_textdatafromwebapp.value) as client:
-        with client.get_queue_sender(QUEUE_NAME_send) as sender:
-            single_message = ServiceBusMessage(UserText)
-            sender.send_messages(single_message)
-
-# Code for receiving a single message for the from other function (Brian).
-def received_single_message():
-    with ServiceBusClient.from_connection_string(retrieved_secret_quetowebapp.value) as client:
-        with client.get_queue_receiver(QUEUE_NAME_receive) as receiver:
             received_message = receiver.receive_messages(max_wait_time=1)
             for message in received_message:
                 bodyMessage = "Receiving: {}".format(message)
