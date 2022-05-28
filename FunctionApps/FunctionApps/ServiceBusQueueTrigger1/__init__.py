@@ -14,7 +14,8 @@ def main(inputRequest: func.ServiceBusMessage,
     message =  inputRequest.get_body().decode('utf-8')
 
     token, request = message.split(';')
-    graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token},).json()['value']
+    graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token}).json()['value']
              
     testjson = json.dumps(graph_data) 
+    logging.info('Dit is wat er uitkomt: ' + testjson)
     outputOutlookApi.set(testjson)
