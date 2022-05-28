@@ -5,15 +5,15 @@
       "name": "inputRequest",
       "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "fromwebappwheatherdata",
-      "connection": "MixitAppServiceBus_SERVICEBUS"
+      "queueName": "outlookrequestqueue",
+      "connection": "MixitServiceBusConnection"
     },
     {
-      "name": "outputWeatherAPI",
+      "name": "outputOutlookApi",
       "direction": "out",
       "type": "serviceBus",
-      "queueName": "fromweerapptowebapp",
-      "connection": "MixitAppServiceBus_SERVICEBUS"
+      "queueName": "outlookoutputqueue",
+      "connection": "MixitServiceBusConnection"
     }
   ]
 }
