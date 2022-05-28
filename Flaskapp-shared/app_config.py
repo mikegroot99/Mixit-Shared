@@ -8,7 +8,7 @@ AUTHORITY = "https://login.microsoftonline.com/common"
 
 REDIRECT_PATH = "/getAToken"
 
-CENDPOINT = 'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2022-04-28T10:10:18.978Z&enddatetime=2022-05-09T10:10:18.979Z'   # This resource requires no admin consent
+CENDPOINT = 'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2022-04-28T10:10:18.978Z&enddatetime=2022-07-09T10:10:18.979Z'   # This resource requires no admin consent
 EENDPOINT = 'https://graph.microsoft.com/v1.0/me/messages'
 
 SCOPE = ["Calendars.ReadWrite", "Mail.Read"]

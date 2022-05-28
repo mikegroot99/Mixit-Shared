@@ -107,27 +107,41 @@ def graphcall():
     # Acces token
     accestoken = token['access_token']
     # send token + app_config.Cendpoint to servicebus que
+    print(accestoken)
     send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
     # send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
     retrievedDataFromRequestquee = received_single_message_from_requestque()
 
+    print(retrievedDataFromRequestquee)
     #print(graph_data)
-    print('------')
-    print('HIERZOOOO')
-    print(type(retrievedDataFromRequestquee))
+    #print('------')
+    #print('HIERZOOOO')
+    #print(type(retrievedDataFromRequestquee))
     
     data = str(retrievedDataFromRequestquee)
-    
+    #print(data)
     json_data = json.loads(data)
-    
-    print('--> JA HALLO DIT IS JSON DATA')
-    tijd = json_data['start']['dateTime'][0]
+    #print(json_data)
+    #print("This is afther loads")
+    #print(json_data)
+    #print(type(json_data))
+    #print('--> JA HALLO DIT IS JSON DATA')
+    tijd = json_data['start']
+    #print(type(tijd))
 
+    ##print("This is temp")
     #print(retrievedDataFromRequestquee)
     # jsonRetrievedDataFromRequestquee = json.loads(retrievedDataFromRequestquee)
     
-    print(json_data['start'])
-    
+    #print(json_data['start'])
+    #print(json_data)
+    #print("Dit is lokale code")
+    graph_data = requests.get(app_config.CENDPOINT, headers={'Authorization': 'Bearer ' + token['access_token']}).json()['value']
+    #print(type(graph_data))
+    #print("Dit is de graph_data")    
+    #print(graph_data)
+    #print(len(json_data))
+
     # print(jsonRetrievedDataFromRequestquee)
     return render_template('schedule.html', json_data=json_data)
 

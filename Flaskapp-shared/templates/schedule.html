@@ -12,12 +12,33 @@
             <th scope="col">Adres</th>
             <th scope="col">Route</th>
         </tr>
-        <tr>
         
-        </tr>
-            <tr>
-            <h4>{{json_data['start']['dateTime']}}</h4>
-            </tr>
-        </tr>
+    </tr>
+
+        
+    <tr>
+        {% for key, value in json_data.items() %}
+            {% if key == "subject" %}
+            <td>{{ value }}</td>
+        {% endif %}
+        {% if key == "start" %}
+            <td>{{ value["dateTime"] }}</td>
+            {% endif %}
+        {% if key == "locations" %}
+            {% if "address" in value[0].keys() %}
+            <td>{{ value[0]["address"]["street"] }} {{ value[0]["address"]["city"] }}</td>
+                {% if "coordinates" in value[0].keys() %}
+                {% if value[0].coordinates != None %}
+                <td> <a href="https://www.google.nl/maps/dir/?api=1&destination= {{ value[0].coordinates.latitude  }},{{ value[0].coordinates.longitude }}"
+                >Route</a></td>
+                {% endif %}
+                {% endif %}
+            {% else %}
+            <td>{{ value[0]["displayName"] }}</td>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+    </tr>
+    
 </table>
 {% endblock %}
