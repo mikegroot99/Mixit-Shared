@@ -1,21 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block main %}
 
-<head>
-  <meta charset="UTF-8" />
+<h2>Welkom {{ user.get("name") }}!</h2>
 
-  <title>MixixWebApp</title>
-</head>
+{% if config.get("CENDPOINT") %}
+<li><a href='/graphcall'>Call Microsoft Graph Calendar API</a></li>
+{% endif %}
 
-  <form action="{{ url_for('UserInputDataField') }}" method="post">
-    <input type="text" name="UserInputDataFromField" placeholder="Vul iets in hier">
-    <button type="submit">Verzenden</button>
-  </form>
-  <h3>Response:</h3>
-  <p>{{UserInputData}}</p>
-  <p>{{weerAppReturnData}}</p>
-  
-  
-</body>
+{% if config.get("EENDPOINT") %}
+<li><a href='/egraphcall'>Call Microsoft Graph Email API</a></li>
+{% endif %}
 
-</html>
+{% if config.get("B2C_PROFILE_AUTHORITY") %}
+<li><a href='{{_build_auth_code_flow(authority=config["B2C_PROFILE_AUTHORITY"])["auth_uri"]}}'>Edit Profile</a></li>
+{% endif %}
+
+<li><a href="/logout">Logout</a></li>
+{% endblock %}
