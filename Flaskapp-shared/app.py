@@ -98,6 +98,7 @@ def login():
 
 @app.route("/graphcall")
 def graphcall():
+    print('\n-------GET --------')
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
@@ -107,23 +108,28 @@ def graphcall():
     accestoken = token['access_token']
     # send token + app_config.Cendpoint to servicebus que
     send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
-    #send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
+    # send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
     retrievedDataFromRequestquee = received_single_message_from_requestque()
 
-
-    #old
-    #Ophalen data met graph API
-    graph_data = requests.get(
-        app_config.CENDPOINT,
-        headers={'Authorization': 'Bearer ' + token['access_token']},
-        ).json()['value']
-    print("tis is data from code")    
     #print(graph_data)
-    print("tis is data from servicebus")
+    print('------')
+    print('HIERZOOOO')
+    print(type(retrievedDataFromRequestquee))
+    
+    data = str(retrievedDataFromRequestquee)
+    
+    json_data = json.loads(data)
+    
+    print('--> JA HALLO DIT IS JSON DATA')
+    tijd = json_data['start']['dateTime'][0]
+
     #print(retrievedDataFromRequestquee)
-    jsonRetrievedDataFromRequestquee = json.loads(retrievedDataFromRequestquee)
-    print(jsonRetrievedDataFromRequestquee["address"])
-    return render_template('schedule.html', data=retrievedDataFromRequestquee)
+    # jsonRetrievedDataFromRequestquee = json.loads(retrievedDataFromRequestquee)
+    
+    print(json_data['start'])
+    
+    # print(jsonRetrievedDataFromRequestquee)
+    return render_template('schedule.html', json_data=json_data)
 
 @app.route("/logout")
 def logout():
@@ -159,17 +165,17 @@ def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
             #print("This is the singel message")
             #print(single_message)
             sender.send_messages(single_message)
-
+    print('Ze zijn verstuurd')
 
 # Code for retrieve a single message to outlookoutputqueue (brian) for getting agenda
 def received_single_message_from_requestque():
+    print('GET MESSAGE FROM SERVICE BUS')
     with ServiceBusClient.from_connection_string(requestque) as client:
         with client.get_queue_receiver(requestquename) as receiver:
             received_message = receiver.receive_messages(max_wait_time=1)
             for message in received_message:
-                bodyMessage = "Receiving: {}".format(message)
                 receiver.complete_message(message)
-                return(bodyMessage)
+                return(message)
 
 
 
