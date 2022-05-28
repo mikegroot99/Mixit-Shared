@@ -1,8 +1,8 @@
 from http.client import responses
+import json
 import logging
 import string
 import requests
-import json
 import azure.functions as func
 
 #The main method that runs when app is triggerd
@@ -16,8 +16,12 @@ def main(inputRequest: func.ServiceBusMessage,
     #Create the request URL for the weather API with the input from the queue
     message =  inputRequest.get_body().decode('utf-8')
     token, request = message.split(';')
-    graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token},).json()
+    graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token},).json()['value']
     #Convert json to a string so that we can send it back to the second queue
     #Set the value of output to the json to send back
-    outputOutlookApi.set(str(graph_data))
+    logging.info('Dit is de output van API: %s',
+                  str(graph_data))                        
+    testjson = json.dumps(graph_data) 
+    #stringGraph_Data = str(graph_data)
+    outputOutlookApi.set(testjson)
     #wtf
