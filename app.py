@@ -15,6 +15,12 @@ app = Flask(__name__)
 app.config.from_object(app_config)
 Session(app)
 
+debug=True
+app.config["TEMPLATES_AUTO_RELOAD"]= True
+
+
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # serviceque connection strings
 # function app (brian) azure location
