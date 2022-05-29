@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block main %}
+
+
+{% for i in json_data%}
+    <p>nieuw item</p>
+    {{i['start']}}
+    {{i['location']}}
+{% endfor %}
+
+
+{% endblock %}

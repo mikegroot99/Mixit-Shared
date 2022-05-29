@@ -25,7 +25,6 @@ requestque =  "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAcces
 requestquename = "outlookoutputqueue"
 
 # function app (wessel) local pc locations
-
 sendqueWessel= "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=input-connection-string;SharedAccessKey=SYSco7xYz+hmt7AF7qZx6dm8ZybeZPOZ7LAHmohUnl8=;EntityPath=input-queque-2"
 sendquenameWessel= "input-queque-2"
 
@@ -107,43 +106,25 @@ def graphcall():
     # Acces token
     accestoken = token['access_token']
     # send token + app_config.Cendpoint to servicebus que
-    print(accestoken)
-    send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
-    # send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
+    #send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
+    send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
     retrievedDataFromRequestquee = received_single_message_from_requestque()
 
-    print(retrievedDataFromRequestquee)
-    #print(graph_data)
-    #print('------')
-    #print('HIERZOOOO')
-    #print(type(retrievedDataFromRequestquee))
     
     data = str(retrievedDataFromRequestquee)
     #print(data)
-    json_data = json.loads(data)
-    #print(json_data)
-    #print("This is afther loads")
-    #print(json_data)
-    #print(type(json_data))
-    #print('--> JA HALLO DIT IS JSON DATA')
-    tijd = json_data['start']
-    #print(type(tijd))
-
-    ##print("This is temp")
-    #print(retrievedDataFromRequestquee)
-    # jsonRetrievedDataFromRequestquee = json.loads(retrievedDataFromRequestquee)
+    json_data = json.loads(data)['value']
     
-    #print(json_data['start'])
-    #print(json_data)
-    #print("Dit is lokale code")
     graph_data = requests.get(app_config.CENDPOINT, headers={'Authorization': 'Bearer ' + token['access_token']}).json()['value']
-    #print(type(graph_data))
-    #print("Dit is de graph_data")    
-    #print(graph_data)
-    #print(len(json_data))
 
+    for i in json_data:
+        print('\n<--->')
+        
+        print(i['start'])
+        print(i['locations'])
+        print(i['start'])
     # print(jsonRetrievedDataFromRequestquee)
-    return render_template('schedule.html', json_data=json_data)
+    return render_template('test.html', json_data=json_data)
 
 @app.route("/logout")
 def logout():
@@ -184,6 +165,10 @@ def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
 # Code for retrieve a single message to outlookoutputqueue (brian) for getting agenda
 def received_single_message_from_requestque():
     print('GET MESSAGE FROM SERVICE BUS')
+    
+    requestque = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=output-queue-2;SharedAccessKey=t5xF10WVDwWzBBZpgXtYpKyhpz4hUeSbnbZ9k/+yVfU=;EntityPath=output-queue-2"
+    requestquename = "output-queue-2"
+    
     with ServiceBusClient.from_connection_string(requestque) as client:
         with client.get_queue_receiver(requestquename) as receiver:
             received_message = receiver.receive_messages(max_wait_time=1)
