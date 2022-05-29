@@ -4,7 +4,6 @@
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "python",
     "AzureWebJobs.ServiceBusQueueTrigger2.Disabled": "true",
-    "AzureWebJobs.ServiceBusQueueTrigger3.Disabled": "true",
-    "MixitServiceBusConnection":"Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=1Q9s7l1qBxe+2ClvoAVLtAVBHGviqWN9ut6Jr9IgVto="
+    "AzureWebJobs.ServiceBusQueueTrigger3.Disabled": "true"
   }
 }

@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% block main %}
 
-
-{{json_data}}
 <!-- {{json_data}} -->
 <!-- {%for agandaItem in json_data%}
     
@@ -19,33 +17,37 @@
             <th scope="col">Adres</th>
             <th scope="col">Route</th>
         </tr>
-        
     </tr>
+        {% for i in json_data %}
+        <tr>
+            {% if "subject" in i.keys()  %}
+                    <td>{{ i["subject"] }}</td>
+                {% endif %}
 
-        
-    <tr>
-        {% for key, value in json_data.items() %}
-            {% if key == "subject" %}
-            <td>{{ value }}</td>
-        {% endif %}
-        {% if key == "start" %}
-            <td>{{ value["dateTime"] }}</td>
-            {% endif %}
-        {% if key == "locations" %}
-            {% if "address" in value[0].keys() %}
-            <td>{{ value[0]["address"]["street"] }} {{ value[0]["address"]["city"] }}</td>
-                {% if "coordinates" in value[0].keys() %}
-                {% if value[0].coordinates != None %}
-                <td> <a href="https://www.google.nl/maps/dir/?api=1&destination= {{ value[0].coordinates.latitude  }},{{ value[0].coordinates.longitude }}"
-                >Route</a></td>
+                {% if "start" in i.keys() %}
+                    <td>{{ i['start']["dateTime"] }}</td>
                 {% endif %}
+                {% if "locations" in i.keys() %}
+                    
+                    {% if "address" in i['location'].keys() %}
+                    <td>{{ i['location']["address"]["street"] }} {{ i['location']["address"]["city"] }}</td>
+                        {% if "coordinates" in i['location'].keys() %}
+                            {% if i['locations'].coordinates != None %}
+                                <td>
+                                    <a href="https://www.google.nl/maps/dir/?api=1&destination= {{ i['location'].coordinates.latitude  }},{{ i['location'].coordinates.longitude }}"
+                                        >Route
+                                    </a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                    <td>{{ i['location']["displayName"] }}</td>
+                    {% endif %}
+                
                 {% endif %}
-            {% else %}
-            <td>{{ value[0]["displayName"] }}</td>
-            {% endif %}
-        {% endif %}
+        </tr>
         {% endfor %}
-    </tr>
+    
     
 </table>
 {% endblock %}

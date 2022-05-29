@@ -106,8 +106,8 @@ def graphcall():
     # Acces token
     accestoken = token['access_token']
     # send token + app_config.Cendpoint to servicebus que
-    #send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
-    send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
+    send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
+    #send_single_message_to_outlookoutputqueueeWessel(accestoken, app_config.CENDPOINT)
     retrievedDataFromRequestquee = received_single_message_from_requestque()
 
     
@@ -120,11 +120,34 @@ def graphcall():
     for i in json_data:
         print('\n<--->')
         
-        print(i['start'])
-        print(i['locations'])
-        print(i['start'])
+        if 'subject' in i.keys():
+            print(f'subject:{i["subject"]}')
+            
+        else:
+            print('zit er niet in')
+            
+        if 'start' in i.keys():
+            print(i['start'])
+            print(type(i['start']))
+            print(i['start']['dateTime'])
+            
+            if 'locations' in i.keys():
+                print('location: --> '+ str(i['location']))
+                if 'address' in i['location'].keys():
+                    print('address --> '+ str(i['location']['address']))
+                    print('street --> '+ str(i['location']['address']['street']))
+                    print('city --> '+ str(i['location']['address']['city']))
+                    
+                    # if 'coordinates' in i['location']['address'].keys():
+                    #     print(i['location']['address']['coordinates'][])
+        else:
+            print('Zit geen Key in')
+    
+        # print(i['start'])
+        # print(i['locations'])
+        # print(i['start'])
     # print(jsonRetrievedDataFromRequestquee)
-    return render_template('test.html', json_data=json_data)
+    return render_template('schedule.html', json_data=json_data)
 
 @app.route("/logout")
 def logout():
@@ -165,16 +188,14 @@ def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
 # Code for retrieve a single message to outlookoutputqueue (brian) for getting agenda
 def received_single_message_from_requestque():
     print('GET MESSAGE FROM SERVICE BUS')
-    
-    requestque = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=output-queue-2;SharedAccessKey=t5xF10WVDwWzBBZpgXtYpKyhpz4hUeSbnbZ9k/+yVfU=;EntityPath=output-queue-2"
-    requestquename = "output-queue-2"
-    
+        
     with ServiceBusClient.from_connection_string(requestque) as client:
         with client.get_queue_receiver(requestquename) as receiver:
             received_message = receiver.receive_messages(max_wait_time=1)
             for message in received_message:
+                
                 receiver.complete_message(message)
-                return(message)
+            return(message)
 
 
 
