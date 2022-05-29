@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block main %}
+
+
+{% for i in json_data %}
+    <h4>Subject</h4>
+    {% if "subject" in i.keys()  %}
+        {{ i["subject"] }}
+    {% endif %}
+    <h4>Start</h4>
+    {% if 'start' in i.keys() %}
+        <p>zit er IN HIA HOLA {{ i['start']['dateTime'] }} </p>
+    {% endif %}
+
+    {% if 'locations' in i.keys() %}
+        <p>LOCATION</p>
+        {% if'address' in i['location'].keys() %}
+            
+        {%endif%}
+
+    {% endif %}
+    
+{% endfor %}
+
+{% endblock %}

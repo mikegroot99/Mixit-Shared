@@ -1,0 +1,16 @@
+Click==7.0
+Flask==1.1.1
+itsdangerous==1.1.0
+jdcal==1.4.1
+jedi==0.15.1
+Jinja2==2.10.3
+MarkupSafe==2.0.1
+Werkzeug==2.0.1
+Pymongo==4.0.1
+Dnspython==2.2.0
+azure-servicebus==7.6.1
+azure-keyvault-secrets==4.3.0
+azure-identity==1.8.0
+flask-session==0.4.0
+msal==1.17.0
+requests==2.27.1

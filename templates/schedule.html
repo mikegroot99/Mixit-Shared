@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<!-- {{json_data}} -->
+<!-- {%for agandaItem in json_data%}
+    
+    {{agendaItem}}
+    
+{%endfor%} -->
+
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Afspraak</th>
+            <th scope="col">Tijd</th>
+            <th scope="col">Adres</th>
+            <th scope="col">Route</th>
+        </tr>
+    </tr>
+        {% for i in json_data %}
+        <tr>
+            {% if "subject" in i.keys()  %}
+                    <td>{{ i["subject"] }}</td>
+                {% endif %}
+
+                {% if "start" in i.keys() %}
+                    <td>{{ i['start']["dateTime"] }}</td>
+                {% endif %}
+                {% if "locations" in i.keys() %}
+                    
+                    {% if "address" in i['location'].keys() %}
+                    <td>{{ i['location']["address"]["street"] }} {{ i['location']["address"]["city"] }}</td>
+                        {% if "coordinates" in i['location'].keys() %}
+                            {% if i['locations'].coordinates != None %}
+                                <td>
+                                    <a href="https://www.google.nl/maps/dir/?api=1&destination= {{ i['location'].coordinates.latitude  }},{{ i['location'].coordinates.longitude }}"
+                                        >Route
+                                    </a>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                    <td>{{ i['location']["displayName"] }}</td>
+                    {% endif %}
+                
+                {% endif %}
+        </tr>
+        {% endfor %}
+    
+    
+</table>
+{% endblock %}
