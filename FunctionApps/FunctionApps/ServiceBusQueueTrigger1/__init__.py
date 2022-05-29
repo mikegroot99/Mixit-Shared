@@ -9,7 +9,6 @@ from azure.servicebus import ServiceBusClient, ServiceBusMessage
 
 #The main method that runs when app is triggerd
 #The inputRequest is the trigger input
-#The outputWeatherAPI is the output these are defined in the function.json
 
 def main(inputRequest: func.ServiceBusMessage,
          outputOutlookApi: func.Out[str]):
