@@ -36,7 +36,7 @@ stages:
       environmentName: test
       azureServiceConnectionId: 767f3596-1bc3-4135-a908-ef32402461f5
     pool:
-      name: Default
+      name: Azure Pipelines
       steps:
       - task: UsePythonVersion@0
         inputs:
