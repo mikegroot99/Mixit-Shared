@@ -13,6 +13,7 @@ variables:
     value: 7421d281-52e1-4c64-b11d-12ee02151732
 
   # Project root folder. Point to the folder containing manage.py file.
+    # az group create --name $(azure-resource-group-name) --location $(azure-resource-location)
 stages:   
 - stage: Deploy_infrastructure
   jobs:
@@ -20,9 +21,8 @@ stages:
     pool:
       name: Azure Pipelines
     steps:
+    - script:  az login
     - script: |
-        az login
-        az group create --name $(azure-resource-group-name) --location $(azure-resource-location)
         az deployment group create --resource-group $(azure-resource-group-name) --template-file $(templateFile)
 - stage: Publish_Code
   dependsOn: Deploy_infrastructure    
