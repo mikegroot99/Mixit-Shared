@@ -25,7 +25,7 @@ stages:
     steps:
     - script:  az login
     - script: |
-  #      az deployment group create --resource-group $(azure-resource-group-name) --template-file $(templateFile)
+        az deployment group create --resource-group $(azure-resource-group-name) --template-file $(templateFile)
 - stage: Publish_Code
   dependsOn: Deploy_infrastructure    
   jobs:
