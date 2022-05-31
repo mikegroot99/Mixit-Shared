@@ -1,11 +1,7 @@
-from ast import AsyncFunctionDef
-from http.client import responses
 import json
 import logging
-import string
 import requests
 import azure.functions as func
-from azure.servicebus import ServiceBusClient, ServiceBusMessage
 
 #The main method that runs when app is triggerd
 #The inputRequest is the trigger input
