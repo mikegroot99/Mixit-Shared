@@ -67,6 +67,7 @@ stages:
         displayName: 'Upload package'
         artifact: drop
         steps:
+
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '$(pythonVersion)'
@@ -85,10 +86,12 @@ stages:
   - deployment: DeploymentJob
     pool:
       vmImage: 'ubuntu-latest'
+    environment: test
     strategy:
       runOnce:
         deploy:
           steps:
+
           - task: UsePythonVersion@0
             inputs:
               versionSpec: '$(pythonVersion)'
