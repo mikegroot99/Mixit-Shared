@@ -67,7 +67,6 @@ stages:
         displayName: 'Upload package'
         artifact: drop
         steps:
-
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '$(pythonVersion)'
@@ -80,18 +79,16 @@ stages:
           appName: $(azure-web-app-name)
 - stage: Deploy
   displayName: 'Deploy Web App'
-  dependsOn: Build
+  dependsOn: Publish_Code
   condition: succeeded()
   jobs:
   - deployment: DeploymentJob
     pool:
-      vmImage: $(vmImageName)
-    environment: $(environmentName)
+      vmImage: 'ubuntu-latest'
     strategy:
       runOnce:
         deploy:
           steps:
-
           - task: UsePythonVersion@0
             inputs:
               versionSpec: '$(pythonVersion)'
