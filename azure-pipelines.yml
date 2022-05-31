@@ -13,6 +13,8 @@ variables:
     value: 767f3596-1bc3-4135-a908-ef32402461f5
   - name: templateFile
     value: main.bicep
+  - name: webApp 
+    value: ditiseentest
 
   # Project root folder. Point to the folder containing manage.py file.
 
@@ -76,29 +78,30 @@ stages:
         inputs:
           azureSubscription: $(azure-subscription-id)
           appName: $(azure-web-app-name)
-  # - stage: Deploy
-  #   displayName: 'Deploy Web App'
-  #   dependsOn: Build
-  #   condition: succeeded()
-  #   jobs:
-  #   - deployment: DeploymentJob
-  #     pool:
-  #       vmImage: $(vmImageName)
-  #     environment: $(environmentName)
-  #     strategy:
-  #       runOnce:
-  #         deploy:
-  #           steps:
-  
-  #           - task: UsePythonVersion@0
-  #             inputs:
-  #               versionSpec: '$(pythonVersion)'
-  #             displayName: 'Use Python version'
-  
-  #           - task: AzureWebApp@1
-  #             displayName: 'Deploy Azure Web App : {{ webAppName }}'
-  #             inputs:
-  #               azureSubscription: $(azureServiceConnectionId)
-  #               appName: $(webAppName)
-  #               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+- stage: Deploy
+  displayName: 'Deploy Web App'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeploymentJob
+    pool:
+      vmImage: $(vmImageName)
+    environment: $(environmentName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(pythonVersion)'
+            displayName: 'Use Python version'
+
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App : {{ webAppName }}'
+            inputs:
+              appType: 'webApp'
+              azureSubscription: $(azureServiceConnectionId)
+              appName: $(webAppName)
+              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
     
