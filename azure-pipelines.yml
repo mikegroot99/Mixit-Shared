@@ -18,7 +18,7 @@ stages:
   jobs:
   - job: Deploy_infrastructure
     pool:
-      name: Default
+      name: Azure Pipelines
     steps:
     - script: |
         az login
