@@ -10,7 +10,7 @@ variables:
   - name: azure-web-app-name
     value: miketestmixit
   - name: azure-subscription-id
-    value: 7421d281-52e1-4c64-b11d-12ee02151732
+    value: 7421d281-52e1-4c64-b11d-12ee0215173
   - name: templateFile
     value: main.bicep
 

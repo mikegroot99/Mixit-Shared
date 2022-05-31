@@ -1,6 +1,5 @@
 // az login
 // az account set --subscription
-
 // az deployment group create --resource-group <Group name> --template-file <file name> 
 
 
