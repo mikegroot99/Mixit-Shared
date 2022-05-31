@@ -37,7 +37,7 @@ stages:
       environmentName: test
       azureServiceConnectionId: 767f3596-1bc3-4135-a908-ef32402461f5
     pool:
-      name: Azure Pipelines
+      vmImage: 'ubuntu-latest'
       steps:
       - task: UsePythonVersion@0
         inputs:
