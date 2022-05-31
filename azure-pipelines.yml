@@ -15,7 +15,7 @@ variables:
     value: main.bicep
 
   # Project root folder. Point to the folder containing manage.py file.
-    # az group create --name $(azure-resource-group-name) --location $(azure-resource-location)
+
 stages:   
 - stage: Deploy_infrastructure
   jobs:
@@ -25,6 +25,7 @@ stages:
     steps:
     - script:  az login
     - script: |
+        az group create --name $(azure-resource-group-name) --location $(azure-resource-location)
         az deployment group create --resource-group $(azure-resource-group-name) --template-file $(templateFile)
 - stage: Publish_Code
   dependsOn: Deploy_infrastructure    
