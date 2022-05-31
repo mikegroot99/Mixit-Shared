@@ -2,17 +2,16 @@ trigger:
 - Deployment-Webapp
 
 variables:
-  - group: simpleFlaskApp
+  #- group: simpleFlaskApp
   - name: azure-resource-group-name
-    value: $[variables.AZURE_RESOURCE_GROUP_NAME]
+    value: mixit2-rg
   - name: azure-resource-location
-    value: $[variables.AZURE_RESOURCE_LOCATION]
-  - name: azure-service-plan-name
-    value: $[variables.AZURE_SERVICE_PLAN_NAME]
+    value: westeurope
   - name: azure-web-app-name
-    value: $[variables.AZURE_WEB_APP_NAME]
+    value: miketestmixit
   - name: azure-subscription-id
-    value: $[variables.AZURE_SUBSCRIPTION_ID]
+    value: 7421d281-52e1-4c64-b11d-12ee02151732
+
   # Project root folder. Point to the folder containing manage.py file.
 stages:   
 - stage: Deploy_infrastructure
