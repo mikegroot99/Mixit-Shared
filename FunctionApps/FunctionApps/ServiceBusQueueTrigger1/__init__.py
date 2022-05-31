@@ -15,7 +15,8 @@ def main(inputRequest: func.ServiceBusMessage,
     #Split the message based on ; and put the results in variable: token and request.
     token, request = message.split(';')
 
-    #graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token}).json()['value']<-- Dit split de agenda punten op.
+    #graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token}).json()['value']<-- This splits the output into multiple messages.
+    #Use to token and request variable to communicate with the graph api.
     graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token}).json()
 
     #Transform the json we get from the graph api to a string. 
