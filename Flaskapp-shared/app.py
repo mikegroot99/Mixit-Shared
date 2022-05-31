@@ -28,29 +28,38 @@ requestque =  "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAcces
 requestquename = "outlookoutputqueue"
 
 # function app (wessel) local pc locations
-sendqueWessel= "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=input-connection-string;SharedAccessKey=SYSco7xYz+hmt7AF7qZx6dm8ZybeZPOZ7LAHmohUnl8=;EntityPath=input-queque-2"
-sendquenameWessel= "input-queque-2"
+# sendqueWessel= "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=input-connection-string;SharedAccessKey=SYSco7xYz+hmt7AF7qZx6dm8ZybeZPOZ7LAHmohUnl8=;EntityPath=input-queque-2"
+# sendquenameWessel= "input-queque-2"
 
-requestqueWessel = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=output-queue-2;SharedAccessKey=t5xF10WVDwWzBBZpgXtYpKyhpz4hUeSbnbZ9k/+yVfU=;EntityPath=output-queue-2"
-requestquenameWessel = "output-queue-2"
+# requestqueWessel = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=output-queue-2;SharedAccessKey=t5xF10WVDwWzBBZpgXtYpKyhpz4hUeSbnbZ9k/+yVfU=;EntityPath=output-queue-2"
+# requestquenameWessel = "output-queue-2"
 # Old keyvault code.
 
 # Azure KeyVault name + URL
-#keyVaultName = "KeyVaultMixit"
-#KVUri = f"https://{keyVaultName}.vault.azure.net"
+keyVaultName = "Mixit-shared-key-vault"
+KVUri = f"https://{keyVaultName}.vault.azure.net"
 
-#credential = DefaultAzureCredential()
-#client = SecretClient(vault_url=KVUri, credential=credential)
+credential = DefaultAzureCredential()
+client = SecretClient(vault_url=KVUri, credential=credential)
 
 # Get secrets from keyvault "KeyVaultMixit" for acces to servicebus.
-#retrieved_secret_textdatafromwebapp = client.get_secret("WebAppKeyQuetextdatafromwebapp")
-#QUEUE_NAME_send = "textdatafromwebapp"
+retrieved_secret_textdatafromwebapp = client.get_secret("outlookoutputqueue")
+QUEUE_NAME_send = "outlookoutputqueue"
 
-#retrieved_secret_quetowebapp = client.get_secret("WebAppKeyQuequetowebapp")
-#QUEUE_NAME_receive = "quetowebapp"
+retrieved_secret_textdatafromwebapp = client.get_secret("outlookrequestqueue")
+QUEUE_NAME_receive = "outlookrequestqueue"
 
-#retrieved_secret_fromwebappwheatherdata = client.get_secret("WebAppKeyQuefromwebappwheatherdata")
-#QUEUE_NAME_WeatherAPISendQue = "fromwebappwheatherdata"
+retrieved_secret_textdatafromwebapp = client.get_secret("Client-secret-web-app")
+CLIENT_WEB_secret = "Client-secret-web-app"
+
+retrieved_secret_textdatafromwebapp = client.get_secret("Client-id-web-app")
+CLIENT_ID_secret= "Client-id-web-app"
+
+# retrieved_secret_quetowebapp = client.get_secret("WebAppKeyQuequetowebapp")
+# QUEUE_NAME_receive = "quetowebapp"
+
+# retrieved_secret_fromwebappwheatherdata = client.get_secret("WebAppKeyQuefromwebappwheatherdata")
+# QUEUE_NAME_WeatherAPISendQue = "fromwebappwheatherdata"
 
 #retrieved_secret_fromweerapptowebapp = client.get_secret("WebAppKeyQuefromweerapptowebapp")
 #QUEUE_NAME_WeatherAPIReceiveQue = "fromweerapptowebapp"
@@ -195,10 +204,9 @@ def received_single_message_from_requestque():
     with ServiceBusClient.from_connection_string(requestque) as client:
         with client.get_queue_receiver(requestquename) as receiver:
             received_message = receiver.receive_messages(max_wait_time=1)
-            for message in received_message:
-                
+            for message in received_message:   
                 receiver.complete_message(message)
-            return(message)
+                return(message)
 
 
 
