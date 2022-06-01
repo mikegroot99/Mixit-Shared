@@ -36,8 +36,8 @@ stages:
   jobs:
   - deployment: DeploymentJob
 pool:
-  vmImage: $(vmImageName)
-  environment: $(environmentName)
+  vmImage: 'ubuntu-latest'
+  environment: test
   strategy:
     runOnce:
       deploy:
