@@ -31,41 +31,41 @@ stages:
     - script: |
         az group create --name $(azure-resource-group-name) --location $(azure-resource-location)
         az deployment group create --resource-group $(azure-resource-group-name) --template-file $(templateFile)
-# - stage: Publish_Code
-#   dependsOn: Deploy_infrastructure
-#   jobs:
-#   - deployment: DeploymentJob
-#     pool:
-#       vmImage: 'ubuntu-latest'
-#     environment: test
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: UsePythonVersion@0
-#             inputs:
-#               versionSpec: '$(pythonVersion)'
-#             displayName: 'Use Python version'
-#           - script: |
-#               python -m venv antenv
-#               source antenv/bin/activate
-#               python -m pip install --upgrade pip
-#               pip install setup
-#               pip install -r requirements.txt
-#             workingDirectory: $(projectRoot)
-#             displayName: "Install requirements"
-#           - task: AzureWebApp@1
-#             displayName: 'Deploy Azure Web App : {{ webAppName }}'
-#             inputs:
-#               appType: 'webApp'
-#               azureSubscription: $(azureServiceConnectionId)
-#               appName: $(webAppName)
-#               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+- stage: Publish_Code
+  dependsOn: Deploy_infrastructure
+  jobs:
+  - deployment: DeploymentJob
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: test
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(pythonVersion)'
+            displayName: 'Use Python version'
+          - script: |
+              python -m venv antenv
+              source antenv/bin/activate
+              python -m pip install --upgrade pip
+              pip install setup
+              pip install -r requirements.txt
+            workingDirectory: $(projectRoot)
+            displayName: "Install requirements"
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App : {{ webAppName }}'
+            inputs:
+              appType: 'webApp'
+              azureSubscription: 'Azure for Students'
+              appName: $(webAppName)
+              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
 
-#           # The following parameter is specific to the Flask example code. You may
-#           # or may not need a startup command for your app.
+          # The following parameter is specific to the Flask example code. You may
+          # or may not need a startup command for your app.
 
-#               startUpCommand: 'gunicorn --bind=0.0.0.0 --workers=4 startup:app'    
+              startUpCommand: 'gunicorn --bind=0.0.0.0 --workers=4 startup:app'    
   # jobs:
   # - job: Publish_Code
   #   variables:
