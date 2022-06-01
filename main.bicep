@@ -28,11 +28,6 @@ resource appServiceApp 'Microsoft.Web/sites@2021-03-01' = {
   }
 }
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
-  location: location
-  name: queueName
-}
-
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
@@ -49,6 +44,11 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForQuery: 'Disabled'
     Request_Source: 'rest'
   }
+}
+
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
+  location: location
+  name: queueName
 }
 
 resource queues 'Microsoft.ServiceBus/namespaces/queues@2021-06-01-preview' = [for queueName in queueNames : {
