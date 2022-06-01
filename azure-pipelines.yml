@@ -35,17 +35,16 @@ stages:
   dependsOn: Deploy_infrastructure
   jobs:
   - deployment: DeploymentJob
-pool:
-  vmImage: 'ubuntu-latest'
-  environment: test
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: test
+    strategy:
+      runOnce:
+        deploy:
+          steps:
           - task: UsePythonVersion@0
             inputs:
-            versionSpec: '$(pythonVersion)'
+              versionSpec: '$(pythonVersion)'
             displayName: 'Use Python version'
           - script: |
               python -m venv antenv
@@ -58,6 +57,7 @@ pool:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App : {{ webAppName }}'
             inputs:
+              appType: 'webApp'
               azureSubscription: $(azureServiceConnectionId)
               appName: $(webAppName)
               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
