@@ -2,9 +2,9 @@
 // az account set --subscription
 // az deployment group create --resource-group <Group name> --template-file <file name> 
 
-param queueName string = 'testmikeservicebus'
+param queueName string = 'testmixitservicebus'
 param location string = resourceGroup().location
-param applicationInsightsName string = 'mixitappinsights'
+param applicationInsightsName string = 'mixitmikeappinsights'
 
 param queueNames array = [
   'inputMike'
@@ -12,7 +12,7 @@ param queueNames array = [
 ]
 
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-03-01' = {
-  name: 'testwebmike'
+  name: 'testwebmixit'
   location: location
   sku: {
     name: 'F1'
@@ -20,7 +20,7 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2021-03-01' = {
 }
 
 resource appServiceApp 'Microsoft.Web/sites@2021-03-01' = {
-  name: 'testmikeserviceplan'
+  name: 'testmxixitserviceplan'
   location: location
   properties: {
     serverFarmId: appServicePlan.id
