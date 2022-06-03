@@ -30,7 +30,7 @@ stages:
     - script:  az login --identity
     # - script: |
         # az deployment group create --resource-group Mixit2-rg --template-file $(templateFile)
-    # - script: apt install python3
+    - script: apt install python3
 # - stage: Publish_Code
 #   dependsOn: Deploy_infrastructure
 #   jobs:
