@@ -35,7 +35,7 @@ stages:
   jobs:
     - job: install_dependencies
       steps:
-        - script: apt update
+        - script: apt-get update
           displayName: 'apt update database'
         - script: apt install python python-pip
           displayName: 'apt install python and pip'
