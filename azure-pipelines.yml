@@ -30,6 +30,17 @@ stages:
     - script:  az login --identity
     - script: |
         az deployment group create --resource-group Mixit2-rg --template-file $(templateFile)
+- stage: build 
+  displayName: "build and push to container registery"
+  jobs:
+    - job: install_dependencies
+      steps:
+        - script: apt update
+          displayName: 'apt update database'
+        - script: apt install python python-pip
+          displayName: 'apt install python and pip'
+        - script: python -m pip install --upgrade flask
+          displayName: 'Install flask application'
     # - script: apt install python3
 # - stage: Publish_Code
 #   dependsOn: Deploy_infrastructure
