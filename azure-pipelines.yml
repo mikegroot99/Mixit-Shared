@@ -28,7 +28,6 @@ stages:
       name: Default
     steps:
     - script:  az login --identity
-<<<<<<< HEAD
     - script: |
         az deployment group create --resource-group Mixit2-rg --template-file $(templateFile)
 - stage: build 
@@ -43,11 +42,6 @@ stages:
         - script: python -m pip install --upgrade flask
           displayName: 'Install flask application'
     # - script: apt install python3
-=======
-    # - script: |
-        # az deployment group create --resource-group Mixit2-rg --template-file $(templateFile)
-    - script: apt install python3
->>>>>>> Deployment-Webapp
 # - stage: Publish_Code
 #   dependsOn: Deploy_infrastructure
 #   jobs:
