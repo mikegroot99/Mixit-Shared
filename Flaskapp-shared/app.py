@@ -19,11 +19,14 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Services bus que's to the function app for microsoft GRAPH API.
-sendque = "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=conncetionRequestQueue;SharedAccessKey=73BwiAWHM7diJ/kRmw2RUGiGL0zkAlBSnjndTWwB3gY=;EntityPath=outlookrequestqueue"
-sendquename = "outlookrequestqueue"
+sendque = "Endpoint=sb://mixit-team-2.servicebus.windows.net/;SharedAccessKeyName=mixit-servicebus;SharedAccessKey=bnqkPVU39RwHkceaHq2KAlMV3KZ/C2SB7qHakJ0rV+Q=;EntityPath=input-queue"
+sendquename = "input-queue"
 
-requestque =  "Endpoint=sb://mixitservicebus.servicebus.windows.net/;SharedAccessKeyName=conncetionOutputQueue;SharedAccessKey=ozFfiZwPe84DJt3v7T2u/sUM2egubyolpV2eTxr6zWM=;EntityPath=outlookoutputqueue"
-requestquename = "outlookoutputqueue"
+requestque =  "Endpoint=sb://mixit-team-2.servicebus.windows.net/;SharedAccessKeyName=outputqueue;SharedAccessKey=erzv7jDvVWakmpFVRzoBJCNwQ8FR7i8KKJgVAC6/P+A=;EntityPath=output-queue"
+requestquename = "output-queue"
+
+sendsmsque = "Endpoint=sb://mixit-team-2.servicebus.windows.net/;SharedAccessKeyName=SendWebApp;SharedAccessKey=xP96kDhGhLKSKxJOer5eWNTujsB+5pHxyRKTXQknnkM=;EntityPath=smsrequestqueue"
+sendsmsquename = "smsrequestqueue"
 
 # azure key vault not in use at the moment!
 
@@ -78,9 +81,15 @@ def graphcall():
     # data from servicebus to string and in new variable
     data = str(retrievedDataFromRequestquee)
     # from json to dicts
-    json_data = json.loads(data)['value']
-    # return schedule.html page with agenda data
-    return render_template('schedule.html', json_data=json_data)
+    print("This is data")
+    print(data)
+    if data != "None":
+        json_data = json.loads(data)['value']
+        # return schedule.html page with agenda data
+        return render_template('schedule.html', json_data=json_data)
+    else:
+        return "Geen data vanuit servicebus"
+
 
 # This funciton is triggerd when the user logout from the webapp.  
 @app.route("/logout")
@@ -89,6 +98,19 @@ def logout():
     return redirect(
         app_config.AUTHORITY + "/oauth2/v2.0/logout" +
         "?post_logout_redirect_uri=" + url_for("index", _external=True))
+
+# This function is triggerd when user send sms
+@app.route("/sendsms", methods=['POST'])
+def sendsms():
+    nullsixnumber = request.form.get("06nummer")
+    smstext = request.form.get("smstext")
+
+    sendsmstoque(nullsixnumber, smstext)
+
+    print(nullsixnumber + ";" + smstext)
+    print("In sendsms")
+    return None;
+    #return redirect(request.referrer)
 
 # function for checking auth validation
 @app.route(app_config.REDIRECT_PATH)
@@ -130,6 +152,20 @@ def received_single_message_from_requestque():
             for message in received_message:   
                 receiver.complete_message(message)
                 return(message)
+
+# For sending sms
+def sendsmstoque(nullsixnumber, smstext):
+    # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
+    with ServiceBusClient.from_connection_string(sendsmsque) as client:
+        with client.get_queue_sender(sendsmsquename) as sender:
+            #tokenstring = json.dumps(accestoken)
+            numberPlusSMStext = nullsixnumber +";"+ smstext
+            single_message = ServiceBusMessage(numberPlusSMStext)
+            #print("This is the singel message")
+            #print(single_message)
+            sender.send_messages(single_message)
+    print('Ze zijn verstuurd')
+
 
 # functions for functions above
 

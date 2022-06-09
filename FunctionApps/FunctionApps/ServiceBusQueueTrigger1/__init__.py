@@ -18,4 +18,3 @@ def main(inputRequest: func.ServiceBusMessage,
     testjson = json.dumps(graph_data)
     #Set response from graph api into the output.
     outputOutlookApi.set(testjson)
-
