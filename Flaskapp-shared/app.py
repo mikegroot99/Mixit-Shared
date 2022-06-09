@@ -2,53 +2,43 @@ import csv
 import os
 import requests
 import json
+import msal
+import app_config
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_session import Session 
 from azure.servicebus import ServiceBusClient, ServiceBusMessage
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
-import msal
-import app_config
+# Import for proxy fix
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 
 app.config.from_object(app_config)
 Session(app)
 
-from werkzeug.middleware.proxy_fix import ProxyFix
+# Proxy fix for redirect URL.
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Services bus que's to the function app for microsoft GRAPH API.
-sendque = "Endpoint=sb://mixit-team-2.servicebus.windows.net/;SharedAccessKeyName=mixit-servicebus;SharedAccessKey=bnqkPVU39RwHkceaHq2KAlMV3KZ/C2SB7qHakJ0rV+Q=;EntityPath=input-queue"
-sendquename = "input-queue"
+# Azure KeyVault name + URL
+keyVaultName = "MixitKeyVaultWebapp"
+KVUri = f"https://{keyVaultName}.vault.azure.net"
 
-requestque =  "Endpoint=sb://mixit-team-2.servicebus.windows.net/;SharedAccessKeyName=outputqueue;SharedAccessKey=erzv7jDvVWakmpFVRzoBJCNwQ8FR7i8KKJgVAC6/P+A=;EntityPath=output-queue"
-requestquename = "output-queue"
+# For auto selecting user/identity, if run local, it use users, if in webapp on azure, it runs on managed identity of the webapp.
+credential = DefaultAzureCredential()
+client = SecretClient(vault_url=KVUri, credential=credential)
 
-sendsmsque = "Endpoint=sb://mixit-team-2.servicebus.windows.net/;SharedAccessKeyName=SendWebApp;SharedAccessKey=xP96kDhGhLKSKxJOer5eWNTujsB+5pHxyRKTXQknnkM=;EntityPath=smsrequestqueue"
+# Get secrets from keyvault "MixitKeyVaultWebapp" for acces to servicebus.
+
+# The first variable gets que string, the second variable sets que name.
+sendsmsque = client.get_secret("sendsmsque")
 sendsmsquename = "smsrequestqueue"
 
-# azure key vault not in use at the moment!
+sendque = client.get_secret("sendque")
+sendquename = "input-queue"
 
-# Azure KeyVault name + URL
-#keyVaultName = "Mixit-shared-key-vault"
-#KVUri = f"https://{keyVaultName}.vault.azure.net"
-
-#credential = DefaultAzureCredential()
-#client = SecretClient(vault_url=KVUri, credential=credential)
-
-# Get secrets from keyvault "KeyVaultMixit" for acces to servicebus. (Not in use at the moment)
-#retrieved_secret_textdatafromwebapp = client.get_secret("outlookoutputqueue")
-#QUEUE_NAME_send = "outlookoutputqueue"
-
-#retrieved_secret_textdatafromwebapp = client.get_secret("outlookrequestqueue")
-#QUEUE_NAME_receive = "outlookrequestqueue"
-
-#retrieved_secret_textdatafromwebapp = client.get_secret("Client-secret-web-app")
-#CLIENT_WEB_secret = "Client-secret-web-app"
-
-#retrieved_secret_textdatafromwebapp = client.get_secret("Client-id-web-app")
-#CLIENT_ID_secret= "Client-id-web-app"
+requestque = client.get_secret("requestque")
+requestquename = "output-queue"
 
 # Website redirects
 @app.route('/')
@@ -83,6 +73,7 @@ def graphcall():
     # from json to dicts
     print("This is data")
     print(data)
+    # This if statement looked if data returned from service bus que. Otherwise it will crash the app if it is empty.
     if data != "None":
         json_data = json.loads(data)['value']
         # return schedule.html page with agenda data
@@ -133,7 +124,7 @@ def authorized():
 # Code for send a single message to outlookoutputqueue for getting agenda
 def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
     # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
-    with ServiceBusClient.from_connection_string(sendque) as client:
+    with ServiceBusClient.from_connection_string(sendque.value) as client:
         with client.get_queue_sender(sendquename) as sender:
             #tokenstring = json.dumps(accestoken)
             tokenAndCendpoint = accestoken +";"+ CENDPOINT
@@ -146,7 +137,7 @@ def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
 # Code for retrieve a single message to outlookoutputqueue for getting agenda
 def received_single_message_from_requestque():
     print('GET MESSAGE FROM SERVICE BUS')
-    with ServiceBusClient.from_connection_string(requestque) as client:
+    with ServiceBusClient.from_connection_string(requestque.value) as client:
         with client.get_queue_receiver(requestquename) as receiver:
             received_message = receiver.receive_messages(max_wait_time=1)
             for message in received_message:   
@@ -156,7 +147,7 @@ def received_single_message_from_requestque():
 # For sending sms
 def sendsmstoque(nullsixnumber, smstext):
     # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
-    with ServiceBusClient.from_connection_string(sendsmsque) as client:
+    with ServiceBusClient.from_connection_string(sendsmsque.value) as client:
         with client.get_queue_sender(sendsmsquename) as sender:
             #tokenstring = json.dumps(accestoken)
             numberPlusSMStext = nullsixnumber +";"+ smstext
