@@ -6,3 +6,4 @@ azure-functions
 requests==2.27.1
 azure-servicebus
 twilio==7.9.2
+matplotlib==3.5.1
