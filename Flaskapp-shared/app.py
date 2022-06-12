@@ -8,13 +8,15 @@ from flask import Flask, render_template, url_for, request, redirect, session
 from flask_session import Session 
 from azure.servicebus import ServiceBusClient, ServiceBusMessage
 from azure.keyvault.secrets import SecretClient
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, AzureCliCredential
 # Import for proxy fix
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 
 app.config.from_object(app_config)
+debug=True
+app.config["TEMPLATES_AUTO_RELOAD"]= True
 Session(app)
 
 # Proxy fix for redirect URL.
@@ -25,7 +27,8 @@ keyVaultName = "MixitKeyVaultWebapp"
 KVUri = f"https://{keyVaultName}.vault.azure.net"
 
 # For auto selecting user/identity, if run local, it use users, if in webapp on azure, it runs on managed identity of the webapp.
-credential = DefaultAzureCredential()
+# credential = DefaultAzureCredential()
+credential = AzureCliCredential()
 client = SecretClient(vault_url=KVUri, credential=credential)
 
 # Get secrets from keyvault "MixitKeyVaultWebapp" for acces to servicebus.
@@ -52,27 +55,46 @@ def login():
     session["flow"] = _build_auth_code_flow(scopes=app_config.SCOPE)
     return render_template("login.html", auth_url=session["flow"]["auth_uri"], version=msal.__version__)
 
+@app.route('/date', methods=['GET', 'POST'])
+def date():
+    if request.method =="POST":
+        print('\n--> is POST request')
+        # input_date = request.form.get('date')
+        start_date = request.form['start-date']
+        end_date = request.form['end-date']
+
+
+        app_config.TESTDATE = f'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime={start_date}T00:00:00.978Z&enddatetime={end_date}T23:59:18.979Z'
+        # app_config.TESTDATE = f'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2022-06-13T10:10:18&enddatetime=2022-06-16T10:10:18'                        
+        return redirect('/graphcall')
+    else:
+        print('--> is GET request')
+    
+    return render_template("date.html")
 # When user clicks on "Agenda ophalen" it triggers this /graphcall function
 @app.route("/graphcall")
 def graphcall():
+
+    print(request.args)
     # This checks if the user have already an exsisting token in the cache, if not then redirecte to the login page.
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-
+    print(f'\nDEFAULT--> {app_config.CENDPOINT}')
+    print(f'\nTEST   --> {app_config.TESTDATE}')
     # access token set in new variable
     accestoken = token['access_token']
 
+    print(f'access token: {accestoken}')
+
     # send token + app_config.Cendpoint to servicebus que
-    send_single_message_to_outlookoutputqueuee(accestoken, app_config.CENDPOINT)
+    send_single_message_to_outlookoutputqueuee(accestoken, app_config.TESTDATE)
     # recive all agenda data from que
     retrievedDataFromRequestquee = received_single_message_from_requestque()
 
     # data from servicebus to string and in new variable
     data = str(retrievedDataFromRequestquee)
     # from json to dicts
-    print("This is data")
-    print(data)
     # This if statement looked if data returned from service bus que. Otherwise it will crash the app if it is empty.
     if data != "None":
         json_data = json.loads(data)['value']
