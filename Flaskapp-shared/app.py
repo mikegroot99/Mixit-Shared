@@ -122,8 +122,8 @@ def sendsms():
 
     print(nullsixnumber + ";" + smstext)
     print("In sendsms")
-    return None;
-    #return redirect(request.referrer)
+    #return None;
+    return redirect(request.referrer)
 
 # function for checking auth validation
 @app.route(app_config.REDIRECT_PATH)
