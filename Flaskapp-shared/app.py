@@ -90,10 +90,8 @@ def graphcall():
     # send token + app_config.Cendpoint to servicebus que
     send_single_message_to_outlookoutputqueuee(accestoken, app_config.TESTDATE)
     # recive all agenda data from que
-    retrievedDataFromRequestquee = received_single_message_from_requestque()
+    data = received_single_message_from_requestque(accestoken)
 
-    # data from servicebus to string and in new variable
-    data = str(retrievedDataFromRequestquee)
     # from json to dicts
     # This if statement looked if data returned from service bus que. Otherwise it will crash the app if it is empty.
     if data != "None":
@@ -156,15 +154,30 @@ def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
             sender.send_messages(single_message)
     print('Ze zijn verstuurd')
 
-# Code for retrieve a single message to outlookoutputqueue for getting agenda
-def received_single_message_from_requestque():
+#Get single message from Graph output queue
+#Checks the token first to make sure its your data
+def received_single_message_from_requestque(accesstoken):
     print('GET MESSAGE FROM SERVICE BUS')
     with ServiceBusClient.from_connection_string(requestque.value) as client:
         with client.get_queue_receiver(requestquename) as receiver:
-            received_message = receiver.receive_messages(max_wait_time=1)
-            for message in received_message:   
+            token = "null"
+            # While loop peeks at the first message and compares the tokens.
+            while token != accesstoken:
+                    print("Token is not a match")
+                    peek_message = receiver.peek_messages(max_message_count=1)
+                    for peekMessage in peek_message:
+                        peekMessage = str(peekMessage)
+                        print(peek_message)
+                        token, data = peekMessage.split(';') 
+                        if token == accesstoken:
+                            continue
+            #If token is a match recieve the message and complete it.            
+            received_message = receiver.receive_messages() 
+            for message in received_message:
+                messageToString = str(message)       
+                token, data = messageToString.split(';') 
                 receiver.complete_message(message)
-                return(message)
+                return(data)
 
 # For sending sms
 def sendsmstoque(nullsixnumber, smstext):

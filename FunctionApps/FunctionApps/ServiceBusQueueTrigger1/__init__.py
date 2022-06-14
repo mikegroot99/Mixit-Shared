@@ -17,4 +17,4 @@ def main(inputRequest: func.ServiceBusMessage,
     #Transform the json we get from the graph api to a string. 
     testjson = json.dumps(graph_data)
     #Set response from graph api into the output.
-    outputOutlookApi.set(testjson)
+    outputOutlookApi.set(token + ";" + testjson)
