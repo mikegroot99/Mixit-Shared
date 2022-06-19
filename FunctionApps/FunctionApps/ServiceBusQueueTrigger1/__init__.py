@@ -15,6 +15,7 @@ def main(inputRequest: func.ServiceBusMessage,
     #Use to token and request variable to communicate with the graph api.
     graph_data = requests.get(request, headers={'Authorization': 'Bearer ' + token}).json()
     #Transform the json we get from the graph api to a string. 
-    testjson = json.dumps(graph_data)
+    graphResponse = json.dumps(graph_data)
     #Set response from graph api into the output.
-    outputOutlookApi.set(token + ";" + testjson)
+    #We send the token back for data authentication
+    outputOutlookApi.set(token + ";" + graphResponse)

@@ -87,10 +87,10 @@ def graphcall():
 
     print(f'access token: {accestoken}')
 
-    # send token + app_config.Cendpoint to servicebus que
-    send_single_message_to_outlookoutputqueuee(accestoken, app_config.TESTDATE)
-    # recive all agenda data from que
-    data = received_single_message_from_requestque(accestoken)
+    # send token + app_config.Cendpoint to servicebus queue
+    send_single_message_to_outlookoutputqueue(accestoken, app_config.TESTDATE)
+    # recive all agenda data from queue
+    data = received_single_message_from_requestqueue(accestoken)
 
     # from json to dicts
     # This if statement looked if data returned from service bus que. Otherwise it will crash the app if it is empty.
@@ -142,7 +142,7 @@ def authorized():
 # Functions for send and retrieve data from servicebus
 
 # Code for send a single message to outlookoutputqueue for getting agenda
-def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
+def send_single_message_to_outlookoutputqueue(accestoken, CENDPOINT):
     # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
     with ServiceBusClient.from_connection_string(sendque.value) as client:
         with client.get_queue_sender(sendquename) as sender:
@@ -156,7 +156,7 @@ def send_single_message_to_outlookoutputqueuee(accestoken, CENDPOINT):
 
 #Get single message from Graph output queue
 #Checks the token first to make sure its your data
-def received_single_message_from_requestque(accesstoken):
+def received_single_message_from_requestqueue(accesstoken):
     print('GET MESSAGE FROM SERVICE BUS')
     with ServiceBusClient.from_connection_string(requestque.value) as client:
         with client.get_queue_receiver(requestquename) as receiver:
@@ -174,6 +174,7 @@ def received_single_message_from_requestque(accesstoken):
             #If token is a match recieve the message and complete it.            
             received_message = receiver.receive_messages() 
             for message in received_message:
+                #Message needs to be a string to preform the split function
                 messageToString = str(message)       
                 token, data = messageToString.split(';') 
                 receiver.complete_message(message)
