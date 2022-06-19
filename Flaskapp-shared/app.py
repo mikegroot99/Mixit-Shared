@@ -168,7 +168,7 @@ def received_single_message_from_requestqueue(accesstoken):
                     for peekMessage in peek_message:
                         peekMessage = str(peekMessage)
                         print(peek_message)
-                        token, data = peekMessage.split(';') 
+                        token, data = peekMessage.split('==ç') 
                         if token == accesstoken:
                             continue
             #If token is a match recieve the message and complete it.            
@@ -176,7 +176,7 @@ def received_single_message_from_requestqueue(accesstoken):
             for message in received_message:
                 #Message needs to be a string to preform the split function
                 messageToString = str(message)       
-                token, data = messageToString.split(';') 
+                token, data = messageToString.split('==ç') 
                 receiver.complete_message(message)
                 return(data)
 

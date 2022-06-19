@@ -18,4 +18,4 @@ def main(inputRequest: func.ServiceBusMessage,
     graphResponse = json.dumps(graph_data)
     #Set response from graph api into the output.
     #We send the token back for data authentication
-    outputOutlookApi.set(token + ";" + graphResponse)
+    outputOutlookApi.set(token + "==ç" + graphResponse)
