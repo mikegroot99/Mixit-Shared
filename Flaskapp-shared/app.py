@@ -167,7 +167,6 @@ def received_single_message_from_requestqueue(accesstoken):
                     peek_message = receiver.peek_messages(max_message_count=1)
                     for peekMessage in peek_message:
                         peekMessage = str(peekMessage)
-                        print(peek_message)
                         token, data = peekMessage.split('==ç') 
                         if token == accesstoken:
                             continue
