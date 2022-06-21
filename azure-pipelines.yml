@@ -37,5 +37,6 @@ stages:
               az webapp deployment source config --name $(webAppName) --resource-group $(resourceGroup) \
               --repo-url $(gitrepo) --branch main --manual-integration
               flask run
+              pip install requests
             workingDirectory: $(projectRoot)
             displayName: "Install requirements"
