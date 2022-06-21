@@ -6,7 +6,6 @@ param queueNames array = [
   'inputOutlookqueue'
   'outputOutlookqueue'
   'inputsms'
-  'outputOutlookqueue'
 ]
 
 param queueName string = 'testmixitservicebus'
