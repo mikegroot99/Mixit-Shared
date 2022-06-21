@@ -161,7 +161,7 @@ def send_single_message_to_outlookoutputqueue(accestoken, CENDPOINT):
 #Get single message from Graph output queue
 #Checks the token first to make sure its your data
 def received_single_message_from_requestqueue(accesstoken):
-    print('GET MESSAGE FROM SERVICE BUS')
+    print('\n--> GET MESSAGE FROM SERVICE BUS')
     verifyDataWithToken(requestque, requestquename, accesstoken)
     with ServiceBusClient.from_connection_string(requestque.value) as client:
         with client.get_queue_receiver(requestquename) as receiver:
@@ -178,6 +178,8 @@ def received_single_message_from_requestqueue(accesstoken):
 #queueName = The name of the output queue
 #accessToken = The token that is send to the service bus when a request is made
 def verifyDataWithToken(outputQueue, queueName, accessToken):
+    print('\n--> Validate CODE')
+
     with ServiceBusClient.from_connection_string(outputQueue.value) as client:
         with client.get_queue_receiver(queueName) as receiver:
             token = "null"
@@ -194,6 +196,8 @@ def verifyDataWithToken(outputQueue, queueName, accessToken):
 
 # For sending sms
 def sendsmstoque(nullsixnumber, smstext):
+    print('\n--> SMS CODE')
+
     # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
     with ServiceBusClient.from_connection_string(sendsmsque.value) as client:
         with client.get_queue_sender(sendsmsquename) as sender:
