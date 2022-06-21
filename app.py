@@ -35,14 +35,17 @@ client = SecretClient(vault_url=KVUri, credential=credential)
 # Get secrets from keyvault "MixitKeyVaultWebapp" for acces to servicebus.
 
 # The first variable gets que string, the second variable sets que name.
-sendsmsque = client.get_secret("sendsmsque")
-sendsmsquename = "smsrequestqueue"
+# sendsmsque = client.get_secret("sendsmsque")
+# sendsmsquename = "smsrequestqueue"
 
-sendque = client.get_secret("sendque")
-sendquename = "input-queue"
+sendsmsque = client.get_secret("inputSMS")
+sendsmsquename = "inputsms"
 
-requestque = client.get_secret("requestque")
-requestquename = "output-queue"
+sendque = client.get_secret("inputGraph")
+sendquename = "inputoutlookqueue"
+
+requestque = client.get_secret("OutputGraph")
+requestquename = "outputoutlookqueue"
 
 # Website redirects
 @app.route('/')
