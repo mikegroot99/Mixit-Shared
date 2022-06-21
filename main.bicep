@@ -12,7 +12,7 @@ param queueNames array = [
 param queueName string = 'testmixitservicebus'
 param location string = resourceGroup().location
 param applicationInsightsName string = 'mixitmikeappinsights'
-param applicationWebAppName string = 'mixitwebapp'
+param applicationWebAppName string = 'MixitApp'
 
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-03-01' = {
   name: 'testwebmixit'
