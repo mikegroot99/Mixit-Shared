@@ -5,14 +5,14 @@
       "name": "inputRequest",
       "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "input-queue",
+      "queueName": "inputoutlookqueue",
       "connection": "MixitServiceBusConnection"
     },
     {
       "name": "outputOutlookApi",
       "direction": "out",
       "type": "serviceBus",
-      "queueName": "output-queue",
+      "queueName": "outputoutlookqueue",
       "connection": "MixitServiceBusConnection"
     }
   ]

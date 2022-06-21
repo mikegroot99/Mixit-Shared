@@ -162,17 +162,6 @@ def received_single_message_from_requestqueue(accesstoken):
     verifyDataWithToken(requestque, requestquename, accesstoken)
     with ServiceBusClient.from_connection_string(requestque.value) as client:
         with client.get_queue_receiver(requestquename) as receiver:
-            # token = "null"
-            # # While loop peeks at the first message and compares the tokens.
-            # while token != accesstoken:
-            #         print("Token is not a match")
-            #         peek_message = receiver.peek_messages(max_message_count=1)
-            #         for peekMessage in peek_message:
-            #             peekMessage = str(peekMessage)
-            #             print(peekMessage)
-            #             token, data = peekMessage.split('==ç') 
-            #             if token == accesstoken:
-            #                 continue
             # If token is a match recieve the message and complete it.            
             received_message = receiver.receive_messages() 
             for message in received_message:
@@ -181,7 +170,10 @@ def received_single_message_from_requestqueue(accesstoken):
                 token, data = messageToString.split('==ç') 
                 receiver.complete_message(message)
                 return(data)
-
+                
+#outputQueue = the connection string for the queue from the keyvault
+#queueName = The name of the output queue
+#accessToken = The token that is send to the service bus when a request is made
 def verifyDataWithToken(outputQueue, queueName, accessToken):
     with ServiceBusClient.from_connection_string(outputQueue.value) as client:
         with client.get_queue_receiver(queueName) as receiver:

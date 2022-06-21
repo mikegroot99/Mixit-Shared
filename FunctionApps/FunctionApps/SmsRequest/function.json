@@ -5,7 +5,7 @@
       "name": "inputRequest",
       "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "SmsRequestQueue",
+      "queueName": "inputsms",
       "connection": "MixitServiceBusConnection"
     }
   ]
