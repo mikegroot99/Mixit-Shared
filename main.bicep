@@ -2,15 +2,17 @@
 // az account set --subscription
 // az deployment group create --resource-group <Group name> --template-file <file name> 
 
+param queueNames array = [
+  'inputOutlookqueue'
+  'outputOutlookqueue'
+  'inputsms'
+  'outputOutlookqueue'
+]
+
 param queueName string = 'testmixitservicebus'
 param location string = resourceGroup().location
 param applicationInsightsName string = 'mixitmikeappinsights'
 param applicationWebAppName string = 'mixitwebapp'
-
-param queueNames array = [
-  'inputMike'
-  'outputMike'
-]
 
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-03-01' = {
   name: 'testwebmixit'

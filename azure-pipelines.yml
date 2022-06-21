@@ -1,9 +1,15 @@
 trigger:
   - Deployment-Webapp
 
+variables:
+  azureServiceConnectionId: 7421d281-52e1-4c64-b11d-12ee02151732
+  projectRoot: $(System.DefaultWorkingDirectory
+  pythonVersion: "3.9"
+
+
 stages:
-  - stage: build
-    displayName: build and push to container registery
+  - stage: Build
+    displayName: Build and Push
     pool:
       name: Default
     jobs:
@@ -17,50 +23,49 @@ stages:
             displayName: apt install python and pip
           - script: python -m pip install --upgrade flask
             displayName: Install flask application
-      - job: install_project_libraries
-        steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: $(pythonVersion)
-              displayName: Use Python $(pythonVersion)
           - script: |
               python -m venv antenv
               source antenv/bin/activate
               python -m pip install --upgrade pip
               pip install setup
               pip install -r requirements.txt
+              az deployment group create --template-file $(templateFile)
             workingDirectory: $(projectRoot)
-            displayName: Install requirements
+            displayName: "Install requirements"
+
           - task: ArchiveFiles@2
+            displayName: "Archive files"
             inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)'
+              rootFolderOrFile: "$(projectRoot)"
               includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip'
+              archiveType: zip
+              archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
               replaceExistingArchive: true
-              verbose: # (no value); this input is optional
-          - publish: $(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip
-            displayName: 'Upload package'
+
+          - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+            displayName: "Upload package"
             artifact: drop
-      - job: deployment
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-        
+
+  - stage: Deploy
+    displayName: "Deploy Web App"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+    - deployment: DeploymentJob
+      pool:
+        name: Default
+      strategy:
+        runOnce:
+          deploy:
+            steps:
               - task: UsePythonVersion@0
                 inputs:
-                  versionSpec: '$(pythonVersion)'
-                displayName: 'Use Python version'
-        
+                  versionSpec: "$(pythonVersion)"
+                displayName: "Use Python version"
+
               - task: AzureWebApp@1
-                displayName: 'Deploy Azure Web App : {{ webAppName }}'
+                displayName: "Deploy Azure Web App : Mixit Personal Assitant"
                 inputs:
                   azureSubscription: $(azureServiceConnectionId)
                   appName: $(webAppName)
-                  package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
-        
-                  # The following parameter is specific to the Flask example code. You may
-                  # or may not need a startup command for your app.
-        
-                  startUpCommand: 'gunicorn --bind=0.0.0.0 --workers=4 startup:app'
+                  package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip  
