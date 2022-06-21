@@ -67,6 +67,6 @@ stages:
               - task: AzureWebApp@1
                 displayName: "Deploy Azure Web App : Mixit Personal Assitant"
                 inputs:
-                  azureSubscription: $(azureServiceConnectionId)
+                  azureSubscription: Self-HBO_ICT
                   appName: $(webAppName)
                   package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip  
