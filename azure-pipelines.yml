@@ -6,6 +6,7 @@ variables:
   projectRoot: $(System.DefaultWorkingDirectory)
   pythonVersion: "3.9"
   templateFile: main.bicep
+  webAppName: MixitApp
   gitrepo: https://github.com/mikegroot99/Mixit-Shared.git
 
 
