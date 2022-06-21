@@ -3,6 +3,7 @@ import os
 import requests
 import json
 import msal
+from sqlalchemy import null
 import app_config
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_session import Session 
@@ -158,19 +159,21 @@ def send_single_message_to_outlookoutputqueue(accestoken, CENDPOINT):
 #Checks the token first to make sure its your data
 def received_single_message_from_requestqueue(accesstoken):
     print('GET MESSAGE FROM SERVICE BUS')
+    verifyDataWithToken(requestque, requestquename, accesstoken)
     with ServiceBusClient.from_connection_string(requestque.value) as client:
         with client.get_queue_receiver(requestquename) as receiver:
-            token = "null"
-            # While loop peeks at the first message and compares the tokens.
-            while token != accesstoken:
-                    print("Token is not a match")
-                    peek_message = receiver.peek_messages(max_message_count=1)
-                    for peekMessage in peek_message:
-                        peekMessage = str(peekMessage)
-                        token, data = peekMessage.split('==ç') 
-                        if token == accesstoken:
-                            continue
-            #If token is a match recieve the message and complete it.            
+            # token = "null"
+            # # While loop peeks at the first message and compares the tokens.
+            # while token != accesstoken:
+            #         print("Token is not a match")
+            #         peek_message = receiver.peek_messages(max_message_count=1)
+            #         for peekMessage in peek_message:
+            #             peekMessage = str(peekMessage)
+            #             print(peekMessage)
+            #             token, data = peekMessage.split('==ç') 
+            #             if token == accesstoken:
+            #                 continue
+            # If token is a match recieve the message and complete it.            
             received_message = receiver.receive_messages() 
             for message in received_message:
                 #Message needs to be a string to preform the split function
@@ -178,6 +181,21 @@ def received_single_message_from_requestqueue(accesstoken):
                 token, data = messageToString.split('==ç') 
                 receiver.complete_message(message)
                 return(data)
+
+def verifyDataWithToken(outputQueue, queueName, accessToken):
+    with ServiceBusClient.from_connection_string(outputQueue.value) as client:
+        with client.get_queue_receiver(queueName) as receiver:
+            token = "null"
+            # While loop peeks at the first message and compares the tokens.
+            while token != accessToken:
+                    print("Token is not a match")
+                    peek_message = receiver.peek_messages(max_message_count=1)
+                    for peekMessage in peek_message:
+                        peekMessage = str(peekMessage)
+                        print(peekMessage)
+                        token, data = peekMessage.split('==ç')
+                        if token == accessToken:
+                            continue
 
 # For sending sms
 def sendsmstoque(nullsixnumber, smstext):
