@@ -1,0 +1,18 @@
+{%extends 'base.html'%}
+
+{%block main%}
+<h1>hier moet een formulier AANPASSING komen</h1>
+
+<form action="/date" method="POST">
+    <input type="date" id="start" name="start-date" 
+       value=""
+       min="" max="" >
+    <input type="date" id="end" name="end-date" 
+       value=""
+       min="" max="" >
+
+    <!-- <input type="submit" value="SUBMIT">     -->
+    <button type="submit">SUBMIT</button>
+</form>
+
+{%endblock%}

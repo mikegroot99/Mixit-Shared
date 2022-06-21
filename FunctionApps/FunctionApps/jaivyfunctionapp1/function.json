@@ -2,17 +2,17 @@
   "scriptFile": "__init__.py",
   "bindings": [
     {
-      "name": "inputRequest",
+      "name": "inputGraphApi",
       "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "input-queue",
+      "queueName": "input-queque-2",
       "connection": "MixitServiceBusConnection"
     },
     {
-      "name": "outputOutlookApi",
+      "name": "outputGraphApi",
       "direction": "out",
       "type": "serviceBus",
-      "queueName": "output-queue",
+      "queueName": "output-queue-2",
       "connection": "MixitServiceBusConnection"
     }
   ]

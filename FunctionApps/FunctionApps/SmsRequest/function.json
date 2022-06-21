@@ -1,0 +1,12 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "inputRequest",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "SmsRequestQueue",
+      "connection": "MixitServiceBusConnection"
+    }
+  ]
+}

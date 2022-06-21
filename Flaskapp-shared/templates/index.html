@@ -4,7 +4,8 @@
 <h2>Welkom {{ user.get("name") }}!</h2>
 
 {% if config.get("CENDPOINT") %}
-<li><a href='/graphcall'>Call Microsoft Graph Calendar API</a></li>
+<!-- <li><a href='/graphcall'>Call Microsoft Graph Calendar API</a></li> -->
+<li><a href="/date">Date for Calendar</a></li>
 {% endif %}
 
 {% if config.get("EENDPOINT") %}
