@@ -52,8 +52,6 @@ stages:
     condition: succeeded()
     jobs:
     - deployment: DeploymentJob
-      pool:
-        name: Default
       strategy:
         runOnce:
           deploy:
