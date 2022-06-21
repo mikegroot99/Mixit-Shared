@@ -33,7 +33,7 @@ stages:
               python -m pip install --upgrade pip
               pip install setup
               pip install -r requirements.txt
-              az deployment group create --template-file $(templateFile)
+              az deployment group create --name testdeployment --resource-group $(resourceGroup) --template-file main.bicep
               az webapp deployment source config --name $(webAppName) --resource-group $(resourceGroup) \
               --repo-url $(gitrepo) --branch main --manual-integration
             workingDirectory: $(projectRoot)
