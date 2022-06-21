@@ -5,6 +5,7 @@ variables:
   azureSubscription: Self-HBO_ICT
   projectRoot: $(System.DefaultWorkingDirectory)
   pythonVersion: "3.9"
+  gitrepo: https://github.com/mikegroot99/Mixit-Shared.git
 
 
 stages:
@@ -30,6 +31,8 @@ stages:
               pip install setup
               pip install -r requirements.txt
               az deployment group create --template-file $(templateFile)
+              az webapp deployment source config --name $(webAppName) --resource-group $resourceGroup \
+              --repo-url $(gitrepo) --branch main --manual-integration
             workingDirectory: $(projectRoot)
             displayName: "Install requirements"
 
@@ -45,28 +48,3 @@ stages:
           - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
             displayName: "Upload package"
             artifact: drop
-
-  - stage: Deploy
-    displayName: "Deploy Web App"
-    dependsOn: Build
-    condition: succeeded()
-    jobs:
-    - deployment: DeploymentJob
-      pool:
-        name: Default
-      environment: test
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-              - task: UsePythonVersion@0
-                inputs:
-                  versionSpec: "$(pythonVersion)"
-                displayName: "Use Python version"
-
-              - task: AzureWebApp@1
-                displayName: "Deploy Azure Web App : Mixit Personal Assitant"
-                inputs:
-                  azureSubscription: $(azureSubscription)
-                  appName: $(webAppName)
-                  package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip  
