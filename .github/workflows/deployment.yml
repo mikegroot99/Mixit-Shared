@@ -59,6 +59,6 @@ jobs:
         id: deploy-to-webapp
         with:
         
-          app-name: 'mixitapphva'
+          app-name: 'mixit-hva-app'
           # slot-name: 'stagingslot'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}

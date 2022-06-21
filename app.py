@@ -19,7 +19,7 @@ app.config.from_object(app_config)
 debug=True
 app.config["TEMPLATES_AUTO_RELOAD"]= True
 Session(app)
-
+#test
 # Proxy fix for redirect URL.
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
