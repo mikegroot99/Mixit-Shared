@@ -27,8 +27,8 @@ keyVaultName = "MixitKeyVaultWebapp"
 KVUri = f"https://{keyVaultName}.vault.azure.net"
 
 # For auto selecting user/identity, if run local, it use users, if in webapp on azure, it runs on managed identity of the webapp.
-# credential = DefaultAzureCredential()
-credential = AzureCliCredential()
+credential = DefaultAzureCredential()
+#credential = AzureCliCredential()
 client = SecretClient(vault_url=KVUri, credential=credential)
 
 # Get secrets from keyvault "MixitKeyVaultWebapp" for acces to servicebus.
