@@ -14,7 +14,6 @@ from azure.identity import DefaultAzureCredential, AzureCliCredential
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
-
 app.config.from_object(app_config)
 debug=True
 app.config["TEMPLATES_AUTO_RELOAD"]= True
@@ -161,19 +160,7 @@ def received_single_message_from_requestqueue(accesstoken):
     print('GET MESSAGE FROM SERVICE BUS')
     verifyDataWithToken(requestque, requestquename, accesstoken)
     with ServiceBusClient.from_connection_string(requestque.value) as client:
-        with client.get_queue_receiver(requestquename) as receiver:
-            # token = "null"
-            # # While loop peeks at the first message and compares the tokens.
-            # while token != accesstoken:
-            #         print("Token is not a match")
-            #         peek_message = receiver.peek_messages(max_message_count=1)
-            #         for peekMessage in peek_message:
-            #             peekMessage = str(peekMessage)
-            #             print(peekMessage)
-            #             token, data = peekMessage.split('==ç') 
-            #             if token == accesstoken:
-            #                 continue
-            # If token is a match recieve the message and complete it.            
+        with client.get_queue_receiver(requestquename) as receiver:           
             received_message = receiver.receive_messages() 
             for message in received_message:
                 #Message needs to be a string to preform the split function
