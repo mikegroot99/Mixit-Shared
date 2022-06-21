@@ -24,7 +24,7 @@ Session(app)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Azure KeyVault name + URL
-keyVaultName = "MixitKeyVaultWebapp"
+keyVaultName = "MixitKeyVault"
 KVUri = f"https://{keyVaultName}.vault.azure.net"
 
 # For auto selecting user/identity, if run local, it use users, if in webapp on azure, it runs on managed identity of the webapp.
