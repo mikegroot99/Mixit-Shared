@@ -13,4 +13,5 @@ azure-keyvault-secrets==4.3.0
 azure-identity==1.8.0
 flask-session==0.4.0
 msal==1.17.0
-requests==2.27.1
+# requests==2.27.1
+requests
