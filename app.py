@@ -64,7 +64,7 @@ def date():
         end_date = request.form['end-date']
 
 
-        app_config.TESTDATE = f'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime={start_date}T00:00:00.978Z&enddatetime={end_date}T23:59:18.979Z'
+        app_config.TESTDATE = 'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime={}T00:00:00.978Z&enddatetime={}T23:59:18.979Z'.format(start_date,end_date)
         # app_config.TESTDATE = f'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2022-06-13T10:10:18&enddatetime=2022-06-16T10:10:18'                        
         return redirect('/graphcall')
     else:
