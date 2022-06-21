@@ -170,7 +170,7 @@ def received_single_message_from_requestqueue(accesstoken):
             for message in received_message:
                 #Message needs to be a string to preform the split function
                 messageToString = str(message)       
-                token, data = messageToString.split('==ç') 
+                token, data = messageToString.split('$==$') 
                 receiver.complete_message(message)
                 return(data)
                 
@@ -188,7 +188,7 @@ def verifyDataWithToken(outputQueue, queueName, accessToken):
                     for peekMessage in peek_message:
                         peekMessage = str(peekMessage)
                         print(peekMessage)
-                        token, data = peekMessage.split('==ç')
+                        token, data = peekMessage.split('$==$')
                         if token == accessToken:
                             continue
 
