@@ -3,7 +3,7 @@ trigger:
 
 variables:
   azureServiceConnectionId: 7421d281-52e1-4c64-b11d-12ee02151732
-  projectRoot: $(System.DefaultWorkingDirectory
+  projectRoot: $(System.DefaultWorkingDirectory)
   pythonVersion: "3.9"
 
 
@@ -67,6 +67,6 @@ stages:
               - task: AzureWebApp@1
                 displayName: "Deploy Azure Web App : Mixit Personal Assitant"
                 inputs:
-                  azureSubscription: Self-HBO_ICT
+                  azureSubscription: $(azureServiceConnectionId)
                   appName: $(webAppName)
                   package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip  
