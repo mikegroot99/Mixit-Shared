@@ -7,6 +7,7 @@ variables:
   pythonVersion: "3.9"
   templateFile: main.bicep
   webAppName: MixitApp
+  resourceGroup: Mixit2-rg
   gitrepo: https://github.com/mikegroot99/Mixit-Shared.git
 
 
@@ -33,7 +34,7 @@ stages:
               pip install setup
               pip install -r requirements.txt
               az deployment group create --template-file $(templateFile)
-              az webapp deployment source config --name $(webAppName) --resource-group $resourceGroup \
+              az webapp deployment source config --name $(webAppName) --resource-group $(resourceGroup) \
               --repo-url $(gitrepo) --branch main --manual-integration
             workingDirectory: $(projectRoot)
             displayName: "Install requirements"
