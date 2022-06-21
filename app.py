@@ -80,12 +80,11 @@ def graphcall():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    print(f'\nDEFAULT--> {app_config.CENDPOINT}')
-    print(f'\nTEST   --> {app_config.TESTDATE}')
+    
     # access token set in new variable
     accestoken = token['access_token']
 
-    print(f'access token: {accestoken}')
+
 
     # send token + app_config.Cendpoint to servicebus queue
     send_single_message_to_outlookoutputqueue(accestoken, app_config.TESTDATE)
@@ -119,7 +118,7 @@ def sendsms():
     sendsmstoque(nullsixnumber, smstext)
 
     print(nullsixnumber + ";" + smstext)
-    print("In sendsms")
+    
     #return None;
     return redirect(request.referrer)
 
