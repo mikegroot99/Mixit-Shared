@@ -6,7 +6,7 @@ variables:
   projectRoot: $(System.DefaultWorkingDirectory)
   pythonVersion: "3.9"
   templateFile: main.bicep
-  webAppName: MixitAppHvA
+  webAppName: MixitAppHvAMike
   resourceGroup: Mixit2-rg
   gitrepo: https://github.com/mikegroot99/Mixit-Shared.git
 
@@ -23,7 +23,7 @@ stages:
             displayName: Authenticate Azure CLI using private agent identity
           - script: apt update
             displayName: apt update database
-          - script: apt install python python-pip
+          - script: apt install python3.9 python-pip
             displayName: apt install python and pip
           - script: python -m pip install --upgrade flask
             displayName: Install flask application

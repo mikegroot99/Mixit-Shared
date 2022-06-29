@@ -3,18 +3,18 @@
 // az deployment group create --resource-group <Group name> --template-file <file name> 
 
 param queueNames array = [
-  'inputOutlookqueue'
-  'outputOutlookqueue'
+  'inputOutlookqueuemike'
+  'outputOutlookqueuemike'
   'inputsms'
 ]
 
-param queueName string = 'mixithvaservicebus'
+param queueName string = 'mixithvaservicebusmike'
 param location string = resourceGroup().location
-param applicationInsightsName string = 'mixithvaappinsights'
-param applicationWebAppName string = 'MixitApphva'
+param applicationInsightsName string = 'mixithvaappinsightsmike'
+param applicationWebAppName string = 'MixitAppHvAMike'
 
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-03-01' = {
-  name: 'testwebmixit'
+  name: 'testwebmixitmike'
   location: location
   sku: {
     name: 'F1'
