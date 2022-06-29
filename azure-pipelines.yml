@@ -19,15 +19,8 @@ stages:
     jobs:
       - job: install_dependencies
         steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '$(pythonVersion)'
           - script: az login --identity
             displayName: Authenticate Azure CLI using private agent identity
-          - script: apt update
-            displayName: apt update database
-          - script: apt install python python-pip
-            displayName: apt install python and pip
           - script: apt-get update
             displayName: apt-get update
           - script: python -m pip install --upgrade flask
