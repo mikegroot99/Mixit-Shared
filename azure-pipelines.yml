@@ -41,7 +41,7 @@ stages:
               pip install -r requirements.txt
               az deployment group create --name testdeployment --resource-group $(resourceGroup) --template-file main.bicep
               az webapp deployment source config --name $(webAppName) --resource-group $(resourceGroup) \
-              --repo-url $(gitrepo) --branch main --manual-integration --linux-fx-version "PYTHON|3.9"
+              --repo-url $(gitrepo) --branch main --manual-integration
               flask run
               pip install requests
             workingDirectory: $(projectRoot)
