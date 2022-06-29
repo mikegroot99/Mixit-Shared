@@ -23,6 +23,8 @@ stages:
             displayName: Authenticate Azure CLI using private agent identity
           - script: apt update
             displayName: apt update database
+          - script: add-apt-repository universe
+            displayName: add repostiory universe
           - script: apt install python3.9 python-pip
             displayName: apt install python and pip
           - script: python -m pip install --upgrade flask
