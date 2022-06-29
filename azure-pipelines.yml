@@ -25,7 +25,7 @@ stages:
             displayName: apt update database
           - script: apt install software-properties-common 
             displayName: apt install python and pip
-          - script: sudo add-apt-repository ppa:deadsnakes/ppa
+          - script: add-apt-repository ppa:deadsnakes/ppa
             displayName: add Python to apt repository
           - script: apt install python3.9 python-pip
             displayName: install Python and Pip
