@@ -19,6 +19,9 @@ stages:
     jobs:
       - job: install_dependencies
         steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(pythonVersion)'
           - script: az login --identity
             displayName: Authenticate Azure CLI using private agent identity
           - script: apt update
