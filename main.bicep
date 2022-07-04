@@ -2,37 +2,31 @@
 // az account set --subscription
 // az deployment group create --resource-group <Group name> --template-file <file name> 
 
+param queueName string = 'testmixitservicebus'
+param location string = resourceGroup().location
+param applicationInsightsName string = 'mixitmikeappinsights'
+param applicationWebAppName string = 'mixitwebapp'
+
 param queueNames array = [
-  'inputOutlookqueuemike'
-  'outputOutlookqueuemike'
-  'inputsms'
+  'inputMixit'
+  'outputMixit'
 ]
 
-param queueName string = 'mixithvaservicebusmike'
-param location string = resourceGroup().location
-param applicationInsightsName string = 'mixithvaappinsightsmike'
-param applicationWebAppName string = 'MixitAppHvAMike'
-
 resource appServicePlan 'Microsoft.Web/serverFarms@2021-03-01' = {
-  name: 'testwebmixitmike'
+  name: 'mixitAppServicePlan'
   location: location
-  sku: {
-    name: 'F1'
-  }
+
 }
 
 resource appServiceApp 'Microsoft.Web/sites@2021-03-01' = {
   name: applicationWebAppName
   location: location
-  kind: 'app,linux'
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
-    siteConfig: {
-      linuxFxVersion: 'Python|3.9'
-    }
   }
 }
+
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
