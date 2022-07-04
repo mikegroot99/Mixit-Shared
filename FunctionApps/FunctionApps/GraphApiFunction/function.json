@@ -1,0 +1,19 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "inputRequest",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "inputoutlookqueue",
+      "connection": "MixitServiceBusConnection"
+    },
+    {
+      "name": "outputOutlookApi",
+      "direction": "out",
+      "type": "serviceBus",
+      "queueName": "outputoutlookqueue",
+      "connection": "MixitServiceBusConnection"
+    }
+  ]
+}
