@@ -14,34 +14,38 @@ from azure.identity import DefaultAzureCredential, AzureCliCredential
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+
 app.config.from_object(app_config)
 debug=True
 app.config["TEMPLATES_AUTO_RELOAD"]= True
 Session(app)
-
+#test
 # Proxy fix for redirect URL.
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Azure KeyVault name + URL
-keyVaultName = "MixitKeyVaultWebapp"
-KVUri = "https://{}.vault.azure.net".format(keyVaultName)
+keyVaultName = "MixitKeyVault"
+KVUri = f"https://{keyVaultName}.vault.azure.net"
 
 # For auto selecting user/identity, if run local, it use users, if in webapp on azure, it runs on managed identity of the webapp.
 credential = DefaultAzureCredential()
-#credential = AzureCliCredential()
+# credential = AzureCliCredential()
 client = SecretClient(vault_url=KVUri, credential=credential)
 
 # Get secrets from keyvault "MixitKeyVaultWebapp" for acces to servicebus.
 
 # The first variable gets que string, the second variable sets que name.
-sendsmsque = client.get_secret("sendsmsque")
-sendsmsquename = "smsrequestqueue"
+# sendsmsque = client.get_secret("sendsmsque")
+# sendsmsquename = "smsrequestqueue"
 
-sendque = client.get_secret("sendque")
-sendquename = "input-queue"
+sendsmsque = client.get_secret("inputSMS")
+sendsmsquename = "inputsms"
 
-requestque = client.get_secret("requestque")
-requestquename = "output-queue"
+sendque = client.get_secret("inputGraph")
+sendquename = "inputoutlookqueue"
+
+requestque = client.get_secret("OutputGraph")
+requestquename = "outputoutlookqueue"
 
 # Website redirects
 @app.route('/')
@@ -64,7 +68,7 @@ def date():
         end_date = request.form['end-date']
 
 
-        app_config.TESTDATE = 'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime={}T00:00:00.978Z&enddatetime={}T23:59:18.979Z'.format(start_date,end_date)
+        app_config.TESTDATE = f'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime={start_date}T00:00:00.978Z&enddatetime={end_date}T23:59:18.979Z'
         # app_config.TESTDATE = f'https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2022-06-13T10:10:18&enddatetime=2022-06-16T10:10:18'                        
         return redirect('/graphcall')
     else:
@@ -80,11 +84,12 @@ def graphcall():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    
+    print(f'\nDEFAULT--> {app_config.CENDPOINT}')
+    print(f'\nTEST   --> {app_config.TESTDATE}')
     # access token set in new variable
     accestoken = token['access_token']
 
-
+    print(f'access token: {accestoken}')
 
     # send token + app_config.Cendpoint to servicebus queue
     send_single_message_to_outlookoutputqueue(accestoken, app_config.TESTDATE)
@@ -118,7 +123,7 @@ def sendsms():
     sendsmstoque(nullsixnumber, smstext)
 
     print(nullsixnumber + ";" + smstext)
-    
+    print("In sendsms")
     #return None;
     return redirect(request.referrer)
 
@@ -156,10 +161,11 @@ def send_single_message_to_outlookoutputqueue(accestoken, CENDPOINT):
 #Get single message from Graph output queue
 #Checks the token first to make sure its your data
 def received_single_message_from_requestqueue(accesstoken):
-    print('GET MESSAGE FROM SERVICE BUS')
+    print('\n--> GET MESSAGE FROM SERVICE BUS')
     verifyDataWithToken(requestque, requestquename, accesstoken)
     with ServiceBusClient.from_connection_string(requestque.value) as client:
-        with client.get_queue_receiver(requestquename) as receiver:           
+        with client.get_queue_receiver(requestquename) as receiver:
+            # If token is a match recieve the message and complete it.            
             received_message = receiver.receive_messages() 
             for message in received_message:
                 #Message needs to be a string to preform the split function
@@ -167,8 +173,13 @@ def received_single_message_from_requestqueue(accesstoken):
                 token, data = messageToString.split('$==$') 
                 receiver.complete_message(message)
                 return(data)
-
+                
+#outputQueue = the connection string for the queue from the keyvault
+#queueName = The name of the output queue
+#accessToken = The token that is send to the service bus when a request is made
 def verifyDataWithToken(outputQueue, queueName, accessToken):
+    print('\n--> Validate CODE')
+
     with ServiceBusClient.from_connection_string(outputQueue.value) as client:
         with client.get_queue_receiver(queueName) as receiver:
             token = "null"
@@ -185,6 +196,8 @@ def verifyDataWithToken(outputQueue, queueName, accessToken):
 
 # For sending sms
 def sendsmstoque(nullsixnumber, smstext):
+    print('\n--> SMS CODE')
+
     # retrieved_secret_fromwebappwheatherdata.value get the plaintext value from the secret
     with ServiceBusClient.from_connection_string(sendsmsque.value) as client:
         with client.get_queue_sender(sendsmsquename) as sender:

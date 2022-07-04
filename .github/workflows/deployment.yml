@@ -7,7 +7,7 @@ name: Build and deploy Python app to Azure Web App - swaydevshello
 on:
   push:
     branches:
-      - main
+      - mike-deployment
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v1
         with:
-          python-version: '3.7'
+          python-version: '3.9'
 
       - name: Create and start virtual environment
         run: |
@@ -58,6 +58,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'MixitApphva'
+        
+          app-name: 'mixit-hva-app'
           # slot-name: 'stagingslot'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
