@@ -1,0 +1,48 @@
+trigger:
+  - main
+
+variables:
+  azureSubscription: Self-HBO_ICT
+  projectRoot: $(System.DefaultWorkingDirectory)
+  pythonVersion: "3.9"
+  templateFile: main.bicep
+  webAppName: MixitAppHvAMike
+  resourceGroup: Mixit2-rg
+  gitrepo: https://github.com/mikegroot99/Mixit-Shared.git
+
+
+stages:
+  - stage: Build
+    displayName: Build and Push
+    pool:
+      name: Default
+    jobs:
+      - job: install_dependencies
+        steps:
+          - script: az login --identity
+            displayName: Authenticate Azure CLI using private agent identity
+          - script: apt update
+            displayName: apt update database
+          - script: apt install software-properties-common 
+            displayName: apt install python and pip
+          - script: add-apt-repository ppa:deadsnakes/ppa
+            displayName: add Python to apt repository
+          - script: apt install python3.9 python-pip
+            displayName: install Python and Pip
+          - script: apt-get update
+            displayName: apt-get update
+          - script: python -m pip install --upgrade flask
+            displayName: Install flask application
+          - script: |
+              python3.9 -m venv antenv
+              source antenv/bin/activate
+              python3.9 -m pip install --upgrade pip
+              pip install setup
+              pip install -r requirements.txt
+              az deployment group create --name testdeployment --resource-group $(resourceGroup) --template-file main.bicep
+              az webapp deployment source config --name $(webAppName) --resource-group $(resourceGroup) \
+              --repo-url $(gitrepo) --branch main --manual-integration
+              flask run
+              pip install requests
+            workingDirectory: $(projectRoot)
+            displayName: "Install requirements"
