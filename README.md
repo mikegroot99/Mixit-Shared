@@ -1,7 +1,7 @@
 # Dit is Project Personal Assistent - Mixit
 
 **Beschrijving:** \
-Deze readme bevat informatie over het opzetten van deze repository naar een Azure DevOps omgeving.
+Deze readme bevat informatie over het opzetten van deze repository naar een Azure Cloud omgeving met gebruik van GitHub.
 
 ## Uitleg applicatie
 - Map FunctionApps: Hierin staat de code van de Function App. Deze moet handmatig overgezet worden naar de applicatie in de Azure Portal na het aanmaken van de resources.
