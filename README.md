@@ -3,6 +3,10 @@
 **Beschrijving:** \
 Deze readme bevat informatie over het opzetten van deze repository naar een Azure DevOps omgeving.
 
+## Uitleg applicatie
+- Map FunctionApps: Hierin staat de code van de Function App. Deze moet handmatig overgezet worden naar de applicatie in de Azure Portal na het aanmaken van de resources.
+- .github: Hierin staat de pipeline. Deze wordt automatisch actief wanneer de publish profile gekoppeld is. Die stap is hieronder te vinden.
+
 De stappen die doorlopen moet worden:
 
 ### Koppel applicatie naar uw eigen Git omgeving
