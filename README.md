@@ -38,5 +38,10 @@ Nadat de secret key is gekoppeld met de Git Repository. Worden vanaf nu alle wij
 
 ## Inrichten Key Vault en Servicebus
 :: TODO // Dylan of Brian
+1. Maak een azure Key Vault aan.
+1. Maak een servicebus aan.
+1. Maak in de servicebus een of meerdere queues aan.
+1. Zet de rechten op de queue en kopier de connection string.
+1. Maak in de Key Vault een nieuwe secret aan en vul de connection string als value daarbij in.
 
 
