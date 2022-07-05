@@ -24,6 +24,9 @@ resource appServiceApp 'Microsoft.Web/sites@2021-03-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
+    siteConfig: {
+      linuxFxVersion: 'PYTHON|3.7'
+    }
   }
 }
 
