@@ -7,7 +7,7 @@ Jinja2==2.10.3
 MarkupSafe==2.0.1
 Werkzeug==2.0.1
 Pymongo==4.0.1
-Dnspython==2.2.0
+Dnspython==2.6.0rc1
 azure-servicebus==7.6.1
 azure-keyvault-secrets==4.3.0
 azure-identity==1.8.0
